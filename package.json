@@ -22,5 +22,8 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
+  },
+  "engines": {
+    "node": "16.1.0"
   }
 }
