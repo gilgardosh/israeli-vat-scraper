@@ -1,8 +1,8 @@
 {
   "devDependencies": {
     "@types/node": "15.6.2",
-    "@types/node-fetch": "^2.5.10",
-    "@types/puppeteer": "^5.4.3",
+    "@types/node-fetch": "2.5.10",
+    "@types/puppeteer": "5.4.3",
     "@typescript-eslint/eslint-plugin": "4.26.0",
     "@typescript-eslint/parser": "4.26.0",
     "eslint": "7.27.0",
