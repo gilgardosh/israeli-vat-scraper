@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { ElementHandle, Page } from 'puppeteer';
 
 export const getSelectOptions = async (
   page: Page,
@@ -25,4 +25,32 @@ export const getSelectOptions = async (
 
 export const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const waitAndClick = async (
+  page: Page,
+  selector: string
+): Promise<void> => {
+  const button = await waitForSelectorPlus(page, selector);
+  if (!button) {
+    console.log(`Error finding button by selector ${selector}`);
+    return;
+  }
+  await button.click();
+};
+
+export const waitForSelectorPlus = async (
+  page: Page,
+  selector: string
+): Promise<ElementHandle<Element> | null> => {
+  return await page
+    .waitForSelector(selector)
+    .then((element) => {
+      return element;
+    })
+    .catch(async () => {
+      console.log(`Activating safety net for selector ${selector}`);
+      await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+      return await page.waitForSelector(selector);
+    });
 };

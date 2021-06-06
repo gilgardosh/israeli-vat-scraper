@@ -1,6 +1,10 @@
 import puppeteer, { Page } from 'puppeteer';
 import dotenv from 'dotenv';
-import { getSelectOptions } from './utils/pageUtil.js';
+import {
+  getSelectOptions,
+  waitAndClick,
+  waitForSelectorPlus,
+} from './utils/pageUtil.js';
 import {
   Report,
   ReportDeals,
@@ -12,7 +16,6 @@ import {
   ReportInputTransactionDetails,
 } from './utils/types.js';
 import {
-  missingDataChecker,
   getReportDetails,
   getReportsTable,
   getReportExpansionTitle,
@@ -29,7 +32,7 @@ const login = async (page: Page): Promise<void> => {
   await page.goto('https://www.misim.gov.il/emdvhmfrt/wLogOnMaam.aspx', {
     waitUntil: 'networkidle2',
   });
-  await page.waitForSelector('#LogonMaam1_EmTwbCtlLogonMaam_BtnSubmit');
+  await waitForSelectorPlus(page, '#LogonMaam1_EmTwbCtlLogonMaam_BtnSubmit');
 
   console.log('Loaded: www.misim.gov.il');
 
@@ -60,16 +63,18 @@ const reportsTableHandler = async (
 ): Promise<Report[]> => {
   console.log(`Scraping data for year ${year}`);
 
-  await page.waitForSelector('#ContentUsersPage_DdlTkufa');
+  await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
   await page.select('#ContentUsersPage_DdlTkufa', year);
 
-  await page.waitForSelector('#ContentUsersPage_TblDuhot');
+  await waitForSelectorPlus(page, '#ContentUsersPage_TblDuhot');
 
-  if (await page.evaluate(missingDataChecker)) {
+  const tableElement = await page.$('#dgDuchot');
+
+  if (!tableElement) {
     return [];
   }
 
-  const table: Report[] = await page.evaluate(getReportsTable);
+  const table: Report[] = await page.evaluate(getReportsTable, tableElement);
 
   return table;
 };
@@ -83,17 +88,19 @@ const reportAdditionalDetailsHandler = async (
   const selector = `#dgDuchot > tbody > tr:nth-child(${
     index + 2
   }) > td:nth-child(7) > table > tbody > tr > td:nth-child(1) > input`;
-  await (await page.waitForSelector(selector))?.click();
+  await waitAndClick(page, selector);
 
-  await page.waitForSelector(
+  const detailsTable = await waitForSelectorPlus(
+    page,
     '#ContentUsersPage_ucPratimNosafimDuchot1_TblPerutDoch'
   );
 
   const additionalDetails: ReportDetails = await page.evaluate(
-    getReportDetails
+    getReportDetails,
+    detailsTable
   );
 
-  await (await page.waitForSelector('#BtnCloseDlgPrtNsf'))?.click();
+  await waitAndClick(page, '#BtnCloseDlgPrtNsf');
 
   return additionalDetails;
 };
@@ -102,12 +109,13 @@ const reportExpansionInputTransactionDetailsHandler = async (
   page: Page,
   index: number
 ): Promise<ReportInputTransactionDetails> => {
-  const transactionsLink = await page.waitForSelector(
+  await waitAndClick(
+    page,
     `#ContentUsersPage_dgHeshboniot_btnPratimNosafim_${index}`
   );
-  await transactionsLink?.click();
 
-  const detailsTable = await page.waitForSelector(
+  const detailsTable = await waitForSelectorPlus(
+    page,
     '#ContentUsersPage_ucPratimNosafimHsb1_TblPerutHeshbonit'
   );
 
@@ -116,18 +124,21 @@ const reportExpansionInputTransactionDetailsHandler = async (
     detailsTable
   );
 
-  await (await page.waitForSelector('#BtnCloseDlgPrtNsf'))?.click();
+  await waitAndClick(page, '#BtnCloseDlgPrtNsf');
   return details;
 };
 
 const reportExpansionRecordTransactionsHandler = async (
   page: Page,
-  selector: string
+  index: number
 ): Promise<ReportInputTransaction[]> => {
-  const transactionsLink = await page.waitForSelector(selector);
-  await transactionsLink?.click();
+  await waitAndClick(
+    page,
+    `#tblSikum > tbody > tr:nth-child(${index}) > td:nth-child(2) > a`
+  );
 
-  const transactionsTable = await page.waitForSelector(
+  const transactionsTable = await waitForSelectorPlus(
+    page,
     '#ContentUsersPage_dgHeshboniot'
   );
   const transactions = await page.evaluate(
@@ -140,7 +151,7 @@ const reportExpansionRecordTransactionsHandler = async (
       await reportExpansionInputTransactionDetailsHandler(page, i);
   }
 
-  await (await page.waitForSelector('#ContentUsersPage_btnGoBack'))?.click();
+  await waitAndClick(page, '#ContentUsersPage_btnGoBack');
   return transactions;
 };
 
@@ -148,12 +159,9 @@ const reportExpansionInputsHandler = async (
   page: Page
 ): Promise<ReportInputs> => {
   console.log('      Fetching inputs...');
-  const inputsButton = await page.waitForSelector(
-    '#ContentUsersPage_TabMenu1_LinkButton0'
-  );
-  await inputsButton?.click();
+  await waitAndClick(page, '#ContentUsersPage_TabMenu1_LinkButton0');
 
-  const inputsTable = await page.waitForSelector('#tblSikum');
+  const inputsTable = await waitForSelectorPlus(page, '#tblSikum');
   const inputsData = await page.evaluate(getReportExpansionInputs, inputsTable);
 
   // gt income transactions
@@ -182,9 +190,8 @@ const reportExpansionInputsHandler = async (
       })();
 
       if (index) {
-        const selector = `#tblSikum > tbody > tr:nth-child(${index}) > td:nth-child(2) > a`;
         inputsData[key as keyof ReportInputs].received.transactions =
-          await reportExpansionRecordTransactionsHandler(page, selector);
+          await reportExpansionRecordTransactionsHandler(page, index);
       }
     }
   }
@@ -196,12 +203,9 @@ const reportExpansionDealsHandler = async (
   page: Page
 ): Promise<ReportDeals> => {
   console.log('      Fetching deals...');
-  const dealsButton = await page.waitForSelector(
-    '#ContentUsersPage_TabMenu1_LinkButton1'
-  );
-  await dealsButton?.click();
+  await waitAndClick(page, '#ContentUsersPage_TabMenu1_LinkButton1');
 
-  const dealsTable = await page.waitForSelector('#tblSikum');
+  const dealsTable = await waitForSelectorPlus(page, '#tblSikum');
   const dealsData = await page.evaluate(getReportExpansionDeals, dealsTable);
 
   // gt income transactions
@@ -234,9 +238,8 @@ const reportExpansionDealsHandler = async (
       })();
 
       if (index) {
-        const selector = `#tblSikum > tbody > tr:nth-child(${index}) > td:nth-child(2) > a`;
         dealsData[key as keyof ReportDeals].received.transactions =
-          await reportExpansionRecordTransactionsHandler(page, selector);
+          await reportExpansionRecordTransactionsHandler(page, index);
       }
     }
   }
@@ -248,15 +251,16 @@ const reportExpansionFixesHandler = async (
   page: Page
 ): Promise<ReportFixedInvoice[]> => {
   console.log('      Fetching fixes...');
-  await (
-    await page.waitForSelector('#ContentUsersPage_lnkHeshboniotBeforeTikun')
-  )?.click();
+  await waitAndClick(page, '#ContentUsersPage_lnkHeshboniotBeforeTikun');
 
   // get fixes
-  const fixesTable = await page.waitForSelector('#ContentUsersPage_DgIskNosfu');
+  const fixesTable = await waitForSelectorPlus(
+    page,
+    '#ContentUsersPage_DgIskNosfu'
+  );
   const fixes = await page.evaluate(getReportExpansionFixes, fixesTable);
 
-  await (await page.waitForSelector('#ContentUsersPage_btnGoBack'))?.click();
+  await waitAndClick(page, '#ContentUsersPage_btnGoBack');
 
   return fixes;
 };
@@ -270,12 +274,19 @@ const reportExpansionHandler = async (
   const selector = `#dgDuchot > tbody > tr:nth-child(${
     index + 2
   }) > td:nth-child(1) > a`;
-  await (await page.waitForSelector(selector))?.click();
+  await waitAndClick(page, selector);
 
   // get title
-  const titleTable = await page.waitForSelector(
+  console.log('      Fetching title...');
+  await waitForSelectorPlus(page, '#shaamcontent');
+
+  const titleTable = await waitForSelectorPlus(
+    page,
     '#shaamcontent > table > tbody > tr:nth-child(2) > td > table'
   );
+  if (!titleTable) {
+    console.log('Error fetching title');
+  }
   const reportExpansion: ReportExpansion = await page.evaluate(
     getReportExpansionTitle,
     titleTable
@@ -304,7 +315,7 @@ const reportExpansionHandler = async (
     console.log('Error fetching fixes:', e);
   }
 
-  await (await page.waitForSelector('#ContentUsersPage_btnGoBack'))?.click();
+  await waitAndClick(page, '#ContentUsersPage_btnGoBack');
 
   return reportExpansion;
 };
@@ -314,7 +325,7 @@ const reportsPageHandler = async (page: Page): Promise<Report[]> => {
     waitUntil: 'networkidle2',
   });
 
-  await page.waitForSelector('#ContentUsersPage_DdlTkufa');
+  await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
   const taxYears = await getSelectOptions(
     page,
     'select#ContentUsersPage_DdlTkufa > option'

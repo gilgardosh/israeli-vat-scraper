@@ -11,14 +11,7 @@ import {
   ReportRecordColumns,
 } from './types.js';
 
-export const missingDataChecker = (): boolean => {
-  const table = document.querySelector('#dgDuchot');
-  return !table;
-};
-
-export const getReportsTable = (): Report[] => {
-  const table = document.querySelector('#dgDuchot') as HTMLTableElement;
-
+export const getReportsTable = (table: HTMLTableElement): Report[] => {
   const tableData: Report[] = [];
 
   for (let i = 1; i < table.rows.length; i++) {
@@ -31,52 +24,7 @@ export const getReportsTable = (): Report[] => {
       submissionDate: tableRow.cells[4].innerText,
       route: tableRow.cells[5].innerText,
       isFixed: tableRow.cells[6].innerText.includes('ת'),
-      _additionalDetailsName: '',
-      _reportExpansionID: '',
     };
-
-    const innerTable = Array.from(
-      tableRow.cells[6].children
-    )[0] as HTMLTableElement;
-
-    for (const element of innerTable.rows[0].cells[0].children) {
-      const additionalDetailsName = element.getAttribute('name');
-      if (additionalDetailsName) {
-        rowData._additionalDetailsName = additionalDetailsName;
-        break;
-      }
-    }
-
-    const getPathTo = (element: Element): string => {
-      if (element.tagName == 'HTML') return '/HTML[1]';
-      if (element === document.body) return '/HTML[1]/BODY[1]';
-
-      let ix = 0;
-      const siblings = element.parentNode?.childNodes || [];
-      for (let i = 0; i < siblings.length; i++) {
-        const sibling = siblings[i] as Element;
-        if (sibling === element)
-          return (
-            getPathTo(element.parentNode as Element) +
-            '/' +
-            element.tagName +
-            '[' +
-            (ix + 1) +
-            ']'
-          );
-        if (sibling.nodeType === 1 && sibling.tagName === element.tagName) ix++;
-      }
-      return (
-        getPathTo(element.parentNode as Element) +
-        '/' +
-        element.tagName +
-        '[' +
-        1 +
-        ']'
-      );
-    };
-
-    rowData._reportExpansionID = getPathTo(tableRow.cells[0].children[0]);
 
     tableData.push(rowData);
   }
@@ -84,20 +32,9 @@ export const getReportsTable = (): Report[] => {
   return tableData;
 };
 
-export const clickElementByName = (name: string): void => {
-  const elements = Array.from(document.getElementsByName(name));
-  console.log(elements);
-  elements[0].click();
-  return;
-};
-
-export const getReportDetails = (): ReportDetails => {
-  const tableElement = document.querySelector(
-    '#ContentUsersPage_ucPratimNosafimDuchot1_TblPerutDoch'
-  ) as HTMLTableElement;
-
+export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
   const getInnerData = (rowNum: number) => {
-    return tableElement.rows[rowNum].cells[1].innerText;
+    return table.rows[rowNum].cells[1].innerText;
   };
 
   const details: ReportDetails = {

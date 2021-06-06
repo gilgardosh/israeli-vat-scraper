@@ -1,7 +1,8 @@
 # israeli-vat-scraper
 
 # Development:
-- fetch reports in paralel pages
-- add scalars to data attributes
+- create JSON schema
+- pack so can be activated (and receive data) from external source
+- fetch reports in paralel pages (maybe paralel browsers?)
 - add configurations (fetch expansion? limit years?)
-- pack so canb be activated (and receive data) from external source
+- add scalars to data attributes

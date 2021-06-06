@@ -6,9 +6,7 @@ export interface Report {
   submissionDate: string; //תאריך הגשה
   route: string; //מסלול
   isFixed: boolean; //האם תוקן
-  _additionalDetailsName: string;
   additionalDetails?: ReportDetails; //פרטים נוספים
-  _reportExpansionID: string;
   reportExpansion?: ReportExpansion; // פירוט הדוח
 }
 
