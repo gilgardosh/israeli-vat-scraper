@@ -107,3 +107,8 @@ export interface ReportFixedInvoice {
   expenderOrRecoever: string; // מוציא/מקבל
   fixDetails: string; // פרטי תיקון
 }
+
+export interface Config {
+  visibleBrowser: boolean;
+  expandData: boolean;
+}
