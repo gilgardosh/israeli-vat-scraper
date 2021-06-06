@@ -40,33 +40,33 @@ export interface ReportExpansion {
   otherInpute: number; // תשומות אחרות
   refundAmount: number; // סכום להחזר
   inputs?: ReportInputs; // תשומות
-  transactions?: ReportDeals; // עסקאות
-  fixedInvoices?: ReportFixedInvoices; // חשבוניות שתוקנו
+  deals?: ReportDeals; // עסקאות
+  fixedInvoices?: ReportFixedInvoice[]; // חשבוניות שתוקנו
 }
 
 export interface ReportInputs {
-  regularInput: ReportRecordCategory; // תשומה רגילה
-  pettyCash: ReportRecordCategory; // קופה קטנה
-  selfInvoiceInput: ReportRecordCategory; // חשבונית עצמית (תשומה)
-  importList: ReportRecordCategory; // רשימון יבוא
-  rashapSupplier: ReportRecordCategory; // ספק רש"פ
-  otherDocument: ReportRecordCategory; // מסמך אחר
-  total: ReportRecordCategory; // סה"כ
+  regularInput: ReportRecordCategories; // תשומה רגילה
+  pettyCash: ReportRecordCategories; // קופה קטנה
+  selfInvoiceInput: ReportRecordCategories; // חשבונית עצמית (תשומה)
+  importList: ReportRecordCategories; // רשימון יבוא
+  rashapSupplier: ReportRecordCategories; // ספק רש"פ
+  otherDocument: ReportRecordCategories; // מסמך אחר
+  total: ReportRecordCategories; // סה"כ
 }
 
 export interface ReportDeals {
-  regularDealRecognized: ReportRecordCategory; // עסקה רגילה - מזוהה
-  zeroDealRecognized: ReportRecordCategory; // עסקה אפס - מזוהה
-  regularDealUnrecognized: ReportRecordCategory; // עסקה רגילה - לא מזוהה
-  zeroDealUnrecognized: ReportRecordCategory; // עסקה אפס - לא מזוהה
-  selfInvoiceDeal: ReportRecordCategory; // חשבונית עצמית (עסקה)
-  listExport: ReportRecordCategory; // רשימון יצוא
-  servicesExport: ReportRecordCategory; // יצוא שירותים
-  rashapClient: ReportRecordCategory; // לקוח רש"פ
-  total: ReportRecordCategory; // סה"כ
+  regularDealRecognized: ReportRecordCategories; // עסקה רגילה - מזוהה
+  zeroDealRecognized: ReportRecordCategories; // עסקה אפס - מזוהה
+  regularDealUnrecognized: ReportRecordCategories; // עסקה רגילה - לא מזוהה
+  zeroDealUnrecognized: ReportRecordCategories; // עסקה אפס - לא מזוהה
+  selfInvoiceDeal: ReportRecordCategories; // חשבונית עצמית (עסקה)
+  listExport: ReportRecordCategories; // רשימון יצוא
+  servicesExport: ReportRecordCategories; // יצוא שירותים
+  rashapClient: ReportRecordCategories; // לקוח רש"פ
+  total: ReportRecordCategories; // סה"כ
 }
 
-export interface ReportRecordCategory {
+export interface ReportRecordCategories {
   received: ReportRecordColumns; // נתקבל (100%)
   incorrect: ReportRecordColumns; // שגוי
   total: ReportRecordColumns; // סיכום
@@ -87,7 +87,7 @@ export interface ReportInputTransaction {
   amount: number; // סכום
   supplierOrList: string; // ספק / רשימון
   errorDescription: string; // תאור שגיאה
-  details: ReportInputTransactionDetails; // פרטים נוספים
+  details?: ReportInputTransactionDetails; // פרטים נוספים
 }
 
 export interface ReportInputTransactionDetails {
@@ -100,7 +100,7 @@ export interface ReportInputTransactionDetails {
   supplierOrList: string; // ספק / רשימון
 }
 
-export interface ReportFixedInvoices {
+export interface ReportFixedInvoice {
   type: string; // סוג
   referenceNum: string; // מס' אסמכתא
   invoiceDate: string; // תאריך החשבונית
