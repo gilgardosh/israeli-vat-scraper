@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "VAT data object",
+  "required": [
+    "submissionPeriod",
+    "type",
+    "corectness",
+    "reportedAmount",
+    "submissionDate",
+    "route",
+    "isFixed"
+  ],
+  "properties": {
+    "submissionPeriod": {
+      "type": "string",
+      "description": "תקופת הדיווח"
+    },
+    "type": {
+      "type": "string",
+      "description": "סוג הדוח"
+    },
+    "corectness": {
+      "type": "string",
+      "description": "תקינות"
+    },
+    "reportedAmount": {
+      "type": "integer",
+      "description": "סכום מדווח"
+    },
+    "submissionDate": {
+      "type": "string",
+      "description": "תאריך הגשה"
+    },
+    "route": {
+      "type": "string",
+      "description": "מסלול"
+    },
+    "isFixed": {
+      "type": "boolean",
+      "description": "האם תוקן"
+    },
+    "additionalDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "פרטים נוספים",
+      "required": [
+        "osekNum",
+        "osekName",
+        "regionalCommissioner",
+        "reportingPeriod",
+        "reportingOrigin",
+        "reportingDate",
+        "reportingStatus",
+        "taxableTransactions",
+        "taxableTransactionsVat",
+        "exemptTransactions",
+        "equipmentInputs",
+        "otherInputs",
+        "refundAmount",
+        "fileInvoiceRecord"
+      ],
+      "properties": {
+        "osekNum": {
+          "type": "string",
+          "description": "מספר עוסק"
+        },
+        "osekName": {
+          "type": "string",
+          "description": "שם עוסק"
+        },
+        "regionalCommissioner": {
+          "type": "string",
+          "description": "ממונה אזורי"
+        },
+        "reportingPeriod": {
+          "type": "string",
+          "description": "תקופת הדווח"
+        },
+        "reportingOrigin": {
+          "type": "string",
+          "description": "מקור הדווח"
+        },
+        "reportingDate": {
+          "type": "string",
+          "description": "תאריך הדווח"
+        },
+        "reportingStatus": {
+          "type": "string",
+          "description": "מצב הדווח"
+        },
+        "taxableTransactions": {
+          "type": "integer",
+          "description": "עסקאות חייבות"
+        },
+        "taxableTransactionsVat": {
+          "type": "integer",
+          "description": "מעמ עסקאות חייבות"
+        },
+        "exemptTransactions": {
+          "type": "integer",
+          "description": "עסקאות פטורות / אפס"
+        },
+        "equipmentInputs": {
+          "type": "integer",
+          "description": "תשומות ציוד"
+        },
+        "otherInputs": {
+          "type": "integer",
+          "description": "תשומות אחרות"
+        },
+        "refundAmount": {
+          "type": "integer",
+          "description": "סכום להחזר"
+        },
+        "fileInvoiceRecord": {
+          "type": "string",
+          "description": "רשומת חשבונית מהקובץ"
+        }
+      }
+    },
+    "reportExpansion": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "פירוט הדוח",
+      "required": [
+        "reportingPeriod",
+        "reportingOrigin",
+        "reportingDate",
+        "taxableTransactions",
+        "taxableTransactionsVat",
+        "exemptTransactions",
+        "equipmentInputs",
+        "otherInpute",
+        "refundAmount"
+      ],
+      "properties": {
+        "reportingPeriod": {
+          "type": "string",
+          "description": "תקופת הדווח"
+        },
+        "reportingOrigin": {
+          "type": "string",
+          "description": "מקור הדווח"
+        },
+        "reportingDate": {
+          "type": "string",
+          "description": "תאריך הדווח"
+        },
+        "taxableTransactions": {
+          "type": "integer",
+          "description": "עסקאות חייבות"
+        },
+        "taxableTransactionsVat": {
+          "type": "integer",
+          "description": "מעמ עסקאות חייבות"
+        },
+        "exemptTransactions": {
+          "type": "integer",
+          "description": "עסקאות פטורות / אפס"
+        },
+        "equipmentInputs": {
+          "type": "integer",
+          "description": "תשומות ציוד"
+        },
+        "otherInpute": {
+          "type": "integer",
+          "description": "תשומות אחרות"
+        },
+        "refundAmount": {
+          "type": "integer",
+          "description": "סכום להחזר"
+        },
+        "inputs": {
+          "type": "ReportInputs",
+          "description": "תשומות"
+          // TODO:
+        },
+        "deals": {
+          "type": "ReportDeals",
+          "description": "עסקאות"
+          // TODO:
+        },
+        "fixedInvoices": {
+          "type": "ReportFixedInvoice",
+          "description": "חשבוניות שתוקנו"
+          // TODO:
+        }
+      }
+    }
+  },
+  "components": {
+    "ReportRecordCategories": {},
+    "ReportRecordColumns": {},
+  }
+}
