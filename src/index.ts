@@ -26,13 +26,14 @@ import {
   getReportExpansionDeals,
   getReportExpansionFixes,
 } from './utils/evaluationFunctions.js';
+import { parseDate } from './utils/dates.js';
 
 dotenv.config();
 
 const login = async (page: Page): Promise<void> => {
   try {
     await page.goto('https://www.misim.gov.il/emdvhmfrt/wLogOnMaam.aspx', {
-      waitUntil: 'networkidle2',
+      waitUntil: ['networkidle2', 'domcontentloaded'],
     });
     await waitForSelectorPlus(page, '#LogonMaam1_EmTwbCtlLogonMaam_BtnSubmit');
 
@@ -75,24 +76,30 @@ const reportsYearHandler = async (year: string): Promise<Report[]> => {
 
     const reports: Report[] = [];
 
-    for (let i = 0; i < baseYearTable.length; i++) {
-      const report = baseYearTable[i];
-      console.log(`  Expanding data for ${report.submissionPeriod} report`);
+    await Promise.all(
+      baseYearTable.map(async (report: Report, i: number) => {
+        console.log(`  Expanding data for ${report.submissionPeriod} report`);
 
-      // get report details
-      report.additionalDetails = await reportAdditionalDetailsHandler(year, i);
-
-      // get report expansion
-      if (_defaultConfig.expandData) {
-        report.reportExpansion = await reportExpansionHandler(
+        // get report details
+        report.additionalDetails = await reportAdditionalDetailsHandler(
           year,
-          i,
-          report.isFixed
+          i
         );
-      }
 
-      reports.push(report);
-    }
+        // get report expansion
+        if (_defaultConfig.expandData) {
+          report.reportExpansion = await reportExpansionHandler(
+            year,
+            i,
+            report.isFixed
+          );
+        }
+
+        return report;
+      })
+    ).then((reportsList) => {
+      reports.push(...reportsList);
+    });
 
     console.log(`Done scraping ${year}`);
     return reports;
@@ -149,9 +156,7 @@ const reportAdditionalDetailsHandler = async (
 
     return additionalDetails;
   } catch (e) {
-    throw new Error(
-      `${year} - reportAdditionalDetailsHandler(${index}) - ${e}`
-    );
+    throw new Error(`reportAdditionalDetailsHandler(${index}) - ${e}`);
   }
 };
 
@@ -402,9 +407,7 @@ const reportExpansionHandler = async (
 
     return reportExpansion;
   } catch (e) {
-    throw new Error(
-      `${year} - reportExpansionHandler(${index}) - ${e.message}`
-    );
+    throw new Error(`reportExpansionHandler(${index}) - ${e.message}`);
   }
 };
 
@@ -429,13 +432,18 @@ const reportsHandler = async (): Promise<Report[]> => {
       })
     ).then((reportsLists) => {
       reportsLists.forEach((list) => {
-        reports.concat(list);
+        reports.push(...list);
       });
     });
 
     reports.sort(
-      (a, b) => (a.submissionPeriod > b.submissionPeriod && 1) || -1
+      (a, b) =>
+        (_defaultConfig.sortDescending
+          ? parseDate(a.submissionPeriod) < parseDate(b.submissionPeriod) && 1
+          : parseDate(a.submissionPeriod) > parseDate(b.submissionPeriod) &&
+            1) || -1
     );
+
     return reports;
   } catch (e) {
     throw new Error(`reportsHandler - ${e.message}`);
@@ -445,6 +453,7 @@ const reportsHandler = async (): Promise<Report[]> => {
 const _defaultConfig: Config = {
   visibleBrowser: false,
   expandData: true,
+  sortDescending: false,
 };
 
 const newPageByYear = async (year: string): Promise<Page> => {
@@ -456,7 +465,7 @@ const newPageByYear = async (year: string): Promise<Page> => {
 
     return page;
   } catch (e) {
-    throw new Error(`${year} - newPageByYear - ${e.message}`);
+    throw new Error(`newPageByYear - ${e.message}`);
   }
 };
 
@@ -466,6 +475,9 @@ const newHomePage = async (): Promise<Page> => {
       headless: !_defaultConfig.visibleBrowser,
     });
     const page = (await browser.pages())[0];
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36'
+    );
 
     await login(page);
 

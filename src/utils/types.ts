@@ -111,4 +111,5 @@ export interface ReportFixedInvoice {
 export interface Config {
   visibleBrowser: boolean;
   expandData: boolean;
+  sortDescending: boolean;
 }
