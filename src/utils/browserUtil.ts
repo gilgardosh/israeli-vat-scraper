@@ -1,18 +1,42 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
+import { login } from '../handlers/loginHandler.js';
+import { waitForSelectorPlus } from './pageUtil.js';
+import { Config } from './types.js';
 
-export const newPage = async (
-  browser: puppeteer.Browser
-): Promise<puppeteer.Page> => {
-  // creates new page in browser
-  const VIEWPORT_WIDTH = 1024;
-  const VIEWPORT_HEIGHT = 768;
+export const newPageByYear = async (
+  config: Config,
+  year: string
+): Promise<Page> => {
+  try {
+    const page = await newHomePage(config);
 
-  const page = await browser.newPage();
+    await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
+    await page.select('#ContentUsersPage_DdlTkufa', year);
 
-  await page.setViewport({
-    width: VIEWPORT_WIDTH,
-    height: VIEWPORT_HEIGHT,
-  });
+    return page;
+  } catch (e) {
+    throw new Error(`newPageByYear - ${e.message}`);
+  }
+};
 
-  return page;
+export const newHomePage = async (config: Config): Promise<Page> => {
+  try {
+    const browser = await puppeteer.launch({
+      headless: !config.visibleBrowser,
+    });
+    const page = (await browser.pages())[0];
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36'
+    );
+
+    await login(page);
+
+    await page.goto('https://www.misim.gov.il/emdvhmfrt/wViewDuchot.aspx', {
+      waitUntil: ['networkidle2', 'domcontentloaded'],
+    });
+
+    return page;
+  } catch (e) {
+    throw new Error(`newHomePage - ${e.message}`);
+  }
 };
