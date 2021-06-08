@@ -1,355 +1,359 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "additionalProperties": false,
-  "description": "VAT data object",
-  "required": [
-    "submissionPeriod",
-    "type",
-    "corectness",
-    "reportedAmount",
-    "submissionDate",
-    "route",
-    "isFixed"
-  ],
-  "properties": {
-    "submissionPeriod": {
-      "type": "string",
-      "description": "תקופת הדיווח"
-    },
-    "type": {
-      "type": "string",
-      "description": "סוג הדוח"
-    },
-    "corectness": {
-      "type": "string",
-      "description": "תקינות"
-    },
-    "reportedAmount": {
-      "type": "integer",
-      "description": "סכום מדווח"
-    },
-    "submissionDate": {
-      "type": "string",
-      "description": "תאריך הגשה"
-    },
-    "route": {
-      "type": "string",
-      "description": "מסלול"
-    },
-    "isFixed": {
-      "type": "boolean",
-      "description": "האם תוקן"
-    },
-    "additionalDetails": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "פרטים נוספים",
-      "required": [
-        "osekNum",
-        "osekName",
-        "regionalCommissioner",
-        "reportingPeriod",
-        "reportingOrigin",
-        "reportingDate",
-        "reportingStatus",
-        "taxableTransactions",
-        "taxableTransactionsVat",
-        "exemptTransactions",
-        "equipmentInputs",
-        "otherInputs",
-        "refundAmount",
-        "fileInvoiceRecord"
-      ],
-      "properties": {
-        "osekNum": {
-          "type": "string",
-          "description": "מספר עוסק"
-        },
-        "osekName": {
-          "type": "string",
-          "description": "שם עוסק"
-        },
-        "regionalCommissioner": {
-          "type": "string",
-          "description": "ממונה אזורי"
-        },
-        "reportingPeriod": {
-          "type": "string",
-          "description": "תקופת הדווח"
-        },
-        "reportingOrigin": {
-          "type": "string",
-          "description": "מקור הדווח"
-        },
-        "reportingDate": {
-          "type": "string",
-          "description": "תאריך הדווח"
-        },
-        "reportingStatus": {
-          "type": "string",
-          "description": "מצב הדווח"
-        },
-        "taxableTransactions": {
-          "type": "integer",
-          "description": "עסקאות חייבות"
-        },
-        "taxableTransactionsVat": {
-          "type": "integer",
-          "description": "מעמ עסקאות חייבות"
-        },
-        "exemptTransactions": {
-          "type": "integer",
-          "description": "עסקאות פטורות / אפס"
-        },
-        "equipmentInputs": {
-          "type": "integer",
-          "description": "תשומות ציוד"
-        },
-        "otherInputs": {
-          "type": "integer",
-          "description": "תשומות אחרות"
-        },
-        "refundAmount": {
-          "type": "integer",
-          "description": "סכום להחזר"
-        },
-        "fileInvoiceRecord": {
-          "type": "string",
-          "description": "רשומת חשבונית מהקובץ"
+  "type": "array",
+  "additionalItems": false,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "description": "VAT data object",
+    "required": [
+      "submissionPeriod",
+      "type",
+      "corectness",
+      "reportedAmount",
+      "submissionDate",
+      "route",
+      "isFixed"
+    ],
+    "properties": {
+      "submissionPeriod": {
+        "type": "string",
+        "description": "תקופת הדיווח"
+      },
+      "type": {
+        "type": "string",
+        "description": "סוג הדוח"
+      },
+      "corectness": {
+        "type": "string",
+        "description": "תקינות"
+      },
+      "reportedAmount": {
+        "type": "integer",
+        "description": "סכום מדווח"
+      },
+      "submissionDate": {
+        "type": "string",
+        "description": "תאריך הגשה"
+      },
+      "route": {
+        "type": "string",
+        "description": "מסלול"
+      },
+      "isFixed": {
+        "type": "boolean",
+        "description": "האם תוקן"
+      },
+      "additionalDetails": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "פרטים נוספים",
+        "required": [
+          "osekNum",
+          "osekName",
+          "regionalCommissioner",
+          "reportingPeriod",
+          "reportingOrigin",
+          "reportingDate",
+          "reportingStatus",
+          "taxableTransactions",
+          "taxableTransactionsVat",
+          "exemptTransactions",
+          "equipmentInputs",
+          "otherInputs",
+          "refundAmount",
+          "fileInvoiceRecord"
+        ],
+        "properties": {
+          "osekNum": {
+            "type": "string",
+            "description": "מספר עוסק"
+          },
+          "osekName": {
+            "type": "string",
+            "description": "שם עוסק"
+          },
+          "regionalCommissioner": {
+            "type": "string",
+            "description": "ממונה אזורי"
+          },
+          "reportingPeriod": {
+            "type": "string",
+            "description": "תקופת הדווח"
+          },
+          "reportingOrigin": {
+            "type": "string",
+            "description": "מקור הדווח"
+          },
+          "reportingDate": {
+            "type": "string",
+            "description": "תאריך הדווח"
+          },
+          "reportingStatus": {
+            "type": "string",
+            "description": "מצב הדווח"
+          },
+          "taxableTransactions": {
+            "type": "integer",
+            "description": "עסקאות חייבות"
+          },
+          "taxableTransactionsVat": {
+            "type": "integer",
+            "description": "מעמ עסקאות חייבות"
+          },
+          "exemptTransactions": {
+            "type": "integer",
+            "description": "עסקאות פטורות / אפס"
+          },
+          "equipmentInputs": {
+            "type": "integer",
+            "description": "תשומות ציוד"
+          },
+          "otherInputs": {
+            "type": "integer",
+            "description": "תשומות אחרות"
+          },
+          "refundAmount": {
+            "type": "integer",
+            "description": "סכום להחזר"
+          },
+          "fileInvoiceRecord": {
+            "type": "string",
+            "description": "רשומת חשבונית מהקובץ"
+          }
         }
-      }
-    },
-    "reportExpansion": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "פירוט הדוח",
-      "required": [
-        "reportingPeriod",
-        "reportingOrigin",
-        "reportingDate",
-        "taxableTransactions",
-        "taxableTransactionsVat",
-        "exemptTransactions",
-        "equipmentInputs",
-        "otherInpute",
-        "refundAmount"
-      ],
-      "properties": {
-        "reportingPeriod": {
-          "type": "string",
-          "description": "תקופת הדווח"
-        },
-        "reportingOrigin": {
-          "type": "string",
-          "description": "מקור הדווח"
-        },
-        "reportingDate": {
-          "type": "string",
-          "description": "תאריך הדווח"
-        },
-        "taxableTransactions": {
-          "type": "integer",
-          "description": "עסקאות חייבות"
-        },
-        "taxableTransactionsVat": {
-          "type": "integer",
-          "description": "מעמ עסקאות חייבות"
-        },
-        "exemptTransactions": {
-          "type": "integer",
-          "description": "עסקאות פטורות / אפס"
-        },
-        "equipmentInputs": {
-          "type": "integer",
-          "description": "תשומות ציוד"
-        },
-        "otherInpute": {
-          "type": "integer",
-          "description": "תשומות אחרות"
-        },
-        "refundAmount": {
-          "type": "integer",
-          "description": "סכום להחזר"
-        },
-        "inputs": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "תשומות",
-          "required": [
-            "regularInput",
-            "pettyCash",
-            "selfInvoiceInput",
-            "importList",
-            "rashapSupplier",
-            "otherDocument",
-            "total"
-          ],
-          "properties": {
-            "regularInput": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "תשומה רגילה" }
-              ]
-            },
-            "pettyCash": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "קופה קטנה" }
-              ]
-            },
-            "selfInvoiceInput": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "חשבונית עצמית (תשומה)" }
-              ]
-            },
-            "importList": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "רשימון יבוא" }
-              ]
-            },
-            "rashapSupplier": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "ספק רשפ" }
-              ]
-            },
-            "otherDocument": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "מסמך אחר" }
-              ]
-            },
-            "total": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "סהכ" }
-              ]
+      },
+      "reportExpansion": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "פירוט הדוח",
+        "required": [
+          "reportingPeriod",
+          "reportingOrigin",
+          "reportingDate",
+          "taxableTransactions",
+          "taxableTransactionsVat",
+          "exemptTransactions",
+          "equipmentInputs",
+          "otherInpute",
+          "refundAmount"
+        ],
+        "properties": {
+          "reportingPeriod": {
+            "type": "string",
+            "description": "תקופת הדווח"
+          },
+          "reportingOrigin": {
+            "type": "string",
+            "description": "מקור הדווח"
+          },
+          "reportingDate": {
+            "type": "string",
+            "description": "תאריך הדווח"
+          },
+          "taxableTransactions": {
+            "type": "integer",
+            "description": "עסקאות חייבות"
+          },
+          "taxableTransactionsVat": {
+            "type": "integer",
+            "description": "מעמ עסקאות חייבות"
+          },
+          "exemptTransactions": {
+            "type": "integer",
+            "description": "עסקאות פטורות / אפס"
+          },
+          "equipmentInputs": {
+            "type": "integer",
+            "description": "תשומות ציוד"
+          },
+          "otherInpute": {
+            "type": "integer",
+            "description": "תשומות אחרות"
+          },
+          "refundAmount": {
+            "type": "integer",
+            "description": "סכום להחזר"
+          },
+          "inputs": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "תשומות",
+            "required": [
+              "regularInput",
+              "pettyCash",
+              "selfInvoiceInput",
+              "importList",
+              "rashapSupplier",
+              "otherDocument",
+              "total"
+            ],
+            "properties": {
+              "regularInput": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "תשומה רגילה" }
+                ]
+              },
+              "pettyCash": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "קופה קטנה" }
+                ]
+              },
+              "selfInvoiceInput": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "חשבונית עצמית (תשומה)" }
+                ]
+              },
+              "importList": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "רשימון יבוא" }
+                ]
+              },
+              "rashapSupplier": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "ספק רשפ" }
+                ]
+              },
+              "otherDocument": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "מסמך אחר" }
+                ]
+              },
+              "total": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "סהכ" }
+                ]
+              }
             }
-          }
-        },
-        "deals": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "עסקאות",
-          "required": [
-            "regularDealRecognized",
-            "zeroDealRecognized",
-            "regularDealUnrecognized",
-            "zeroDealUnrecognized",
-            "selfInvoiceDeal",
-            "listExport",
-            "servicesExport",
-            "rashapClient",
-            "total"
-          ],
-          "properties": {
-            "regularDealRecognized": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "עסקה רגילה - מזוהה" }
-              ]
-            },
-            "zeroDealRecognized": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "עסקה אפס - מזוהה" }
-              ]
-            },
-            "regularDealUnrecognized": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "עסקה רגילה - לא מזוהה" }
-              ]
-            },
-            "zeroDealUnrecognized": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "עסקה אפס - לא מזוהה" }
-              ]
-            },
-            "selfInvoiceDeal": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "חשבונית עצמית (עסקה)" }
-              ]
-            },
-            "listExport": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "רשימון יצוא" }
-              ]
-            },
-            "servicesExport": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "יצוא שירותים" }
-              ]
-            },
-            "rashapClient": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "לקוח רשפ" }
-              ]
-            },
-            "total": {
-              "allOf": [
-                { "$ref": "#/components/ReportRecordCategories" },
-                { "description": "סהכ" }
-              ]
+          },
+          "deals": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "עסקאות",
+            "required": [
+              "regularDealRecognized",
+              "zeroDealRecognized",
+              "regularDealUnrecognized",
+              "zeroDealUnrecognized",
+              "selfInvoiceDeal",
+              "listExport",
+              "servicesExport",
+              "rashapClient",
+              "total"
+            ],
+            "properties": {
+              "regularDealRecognized": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "עסקה רגילה - מזוהה" }
+                ]
+              },
+              "zeroDealRecognized": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "עסקה אפס - מזוהה" }
+                ]
+              },
+              "regularDealUnrecognized": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "עסקה רגילה - לא מזוהה" }
+                ]
+              },
+              "zeroDealUnrecognized": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "עסקה אפס - לא מזוהה" }
+                ]
+              },
+              "selfInvoiceDeal": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "חשבונית עצמית (עסקה)" }
+                ]
+              },
+              "listExport": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "רשימון יצוא" }
+                ]
+              },
+              "servicesExport": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "יצוא שירותים" }
+                ]
+              },
+              "rashapClient": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "לקוח רשפ" }
+                ]
+              },
+              "total": {
+                "allOf": [
+                  { "$ref": "#/definitions/ReportRecordCategories" },
+                  { "description": "סהכ" }
+                ]
+              }
             }
-          }
-        },
-        "fixedInvoices": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "חשבוניות שתוקנו",
-          "required": [
-            "type",
-            "referenceNum",
-            "invoiceDate",
-            "invoiceAmount",
-            "vatAmount",
-            "expenderOrRecoever",
-            "fixDetails"
-          ],
-          "properties": {
-            "type": {
-              "type": "string",
-              "description": "סוג"
-            },
-            "referenceNum": {
-              "type": "string",
-              "description": "מס' אסמכתא"
-            },
-            "invoiceDate": {
-              "type": "string",
-              "description": "תאריך החשבונית"
-            },
-            "invoiceAmount": {
-              "type": "integer",
-              "description": "סכום החשבונית"
-            },
-            "vatAmount": {
-              "type": "integer",
-              "description": "סכום המע'מ"
-            },
-            "expenderOrRecoever": {
-              "type": "string",
-              "description": "מוציא/מקבל"
-            },
-            "fixDetails": {
-              "type": "string",
-              "description": "פרטי תיקון"
+          },
+          "fixedInvoices": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "חשבוניות שתוקנו",
+            "required": [
+              "type",
+              "referenceNum",
+              "invoiceDate",
+              "invoiceAmount",
+              "vatAmount",
+              "expenderOrRecoever",
+              "fixDetails"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "סוג"
+              },
+              "referenceNum": {
+                "type": "string",
+                "description": "מס' אסמכתא"
+              },
+              "invoiceDate": {
+                "type": "string",
+                "description": "תאריך החשבונית"
+              },
+              "invoiceAmount": {
+                "type": "integer",
+                "description": "סכום החשבונית"
+              },
+              "vatAmount": {
+                "type": "integer",
+                "description": "סכום המע'מ"
+              },
+              "expenderOrRecoever": {
+                "type": "string",
+                "description": "מוציא/מקבל"
+              },
+              "fixDetails": {
+                "type": "string",
+                "description": "פרטי תיקון"
+              }
             }
           }
         }
       }
     }
   },
-  "components": {
+  "definitions": {
     "ReportRecordCategories": {
       "type": "object",
       "additionalProperties": false,
@@ -357,19 +361,19 @@
       "properties": {
         "received": {
           "allOf": [
-            { "$ref": "#/components/ReportRecordColumns" },
+            { "$ref": "#/definitions/ReportRecordColumns" },
             { "description": "נתקבל (100%)" }
           ]
         },
         "incorrect": {
           "allOf": [
-            { "$ref": "#/components/ReportRecordColumns" },
+            { "$ref": "#/definitions/ReportRecordColumns" },
             { "description": "שגוי" }
           ]
         },
         "total": {
           "allOf": [
-            { "$ref": "#/components/ReportRecordColumns" },
+            { "$ref": "#/definitions/ReportRecordColumns" },
             { "description": "סיכום" }
           ]
         }
@@ -393,7 +397,7 @@
           "description": "סכום לפני מעמ"
         },
         "transactions": {
-          "type": ["array"],
+          "type": "array",
           "additionalItems": false,
           "items": {
             "type": "object",

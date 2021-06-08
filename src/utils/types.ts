@@ -112,6 +112,7 @@ export interface Config {
   visibleBrowser: boolean;
   expandData: boolean;
   sortDescending: boolean;
+  validate: boolean;
 }
 
 export interface UserCredentials {

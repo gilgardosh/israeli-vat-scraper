@@ -8,6 +8,6 @@
 - Alternatively, add the credentials as input to the scraper function
 
 # Development:
-- create JSON schema
+- make schema fields as strict as possible
 - expand configurations (limit years, validate with schema, etc)
 - add scalars to data attributes
