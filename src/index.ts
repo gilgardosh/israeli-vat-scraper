@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
-import { Config, Report } from './utils/types.js';
+import { Config, Report, UserCredentials } from './utils/types.js';
 import { homePageHandler } from './handlers/mainPageHandler.js';
+import {
+  getEnvCredentials,
+  updateCredentials,
+} from './handlers/loginHandler.js';
 
 dotenv.config();
 
@@ -20,8 +24,12 @@ const updateConfig = (config: Partial<Config>): void => {
   }
 };
 
-const scraper = async (config: Partial<Config> = {}): Promise<Report[]> => {
+const scraper = async (
+  credentials?: UserCredentials,
+  config: Partial<Config> = {}
+): Promise<Report[]> => {
   try {
+    updateCredentials(credentials || getEnvCredentials());
     updateConfig(config);
 
     const reports = await homePageHandler(_config);
