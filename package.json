@@ -1,4 +1,40 @@
 {
+  "name": "israeli-vat-scraper",
+  "version": "0.0.2",
+  "description": "Scraper app for fetching Israeli VAT data",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gilgardosh/israeli-vat-scraper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gilgardosh/israeli-vat-scraper/issues"
+  },
+  "homepage": "https://github.com/gilgardosh/israeli-vat-scraper#readme",
+  "author": "gilgardosh <gilgardosh@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "node --loader ts-node/esm src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prebuild": "yarn lint:fix",
+    "build": "tsc",
+    "prepublish": "yarn build"
+  },
+  "engines": {
+    "node": "16.0.0"
+  },
+  "dependencies": {
+    "dotenv": "10.0.0",
+    "puppeteer": "10.0.0"
+  },
   "devDependencies": {
     "@types/node": "15.6.2",
     "@types/puppeteer": "5.4.3",
@@ -10,28 +46,5 @@
     "prettier": "2.3.1",
     "ts-node": "10.0.0",
     "typescript": "4.3.2"
-  },
-  "name": "israeli-vat-scraper",
-  "version": "0.0.1",
-  "description": "Scraper app for fetching Israeli VAT data",
-  "type": "module",
-  "main": "./dist/index.ts",
-  "exports": "./dist/index.js",
-  "repository": "git@github.com:gilgardosh/israeli-vat-scraper.git",
-  "author": "gilgardosh <gilgardosh@gmail.com>",
-  "license": "MIT",
-  "scripts": {
-    "start": "tsc && node dist/index.js",
-    "dev": "node --loader ts-node/esm src/index.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "build": "tsc"
-  },
-  "engines": {
-    "node": "16.0.0"
-  },
-  "dependencies": {
-    "dotenv": "10.0.0",
-    "puppeteer": "10.0.0"
   }
 }
