@@ -113,3 +113,9 @@ export interface Config {
   expandData: boolean;
   sortDescending: boolean;
 }
+
+export interface UserCredentials {
+  vatNumber: string;
+  userCode: string;
+  userPass: string;
+}

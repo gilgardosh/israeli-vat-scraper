@@ -1,5 +1,26 @@
 import { Page } from 'puppeteer';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
+import { UserCredentials } from '../utils/types.js';
+
+const _creds: UserCredentials = {
+  vatNumber: '',
+  userCode: '',
+  userPass: '',
+};
+
+export const getEnvCredentials = (): UserCredentials => {
+  return {
+    vatNumber: process.env.VAT_NUM as string,
+    userCode: process.env.USER_CODE as string,
+    userPass: process.env.USER_PASS as string,
+  };
+};
+
+export const updateCredentials = (credentials: UserCredentials): void => {
+  _creds.vatNumber = credentials.vatNumber;
+  _creds.userCode = credentials.userCode;
+  _creds.userPass = credentials.userPass;
+};
 
 export const login = async (page: Page): Promise<void> => {
   try {
@@ -10,17 +31,17 @@ export const login = async (page: Page): Promise<void> => {
 
     await page.type(
       '#LogonMaam1_EmTwbCtlLogonMaam_TxtMisOsek',
-      process.env.VAT_NUM as string
+      _creds.vatNumber
     );
 
     await page.type(
       '#LogonMaam1_EmTwbCtlLogonMaam_TxtKodUser',
-      process.env.USER_CODE as string
+      _creds.userCode
     );
 
     await page.type(
       '#LogonMaam1_EmTwbCtlLogonMaam_TxtPassword',
-      process.env.USER_PASS as string
+      _creds.userPass
     );
 
     await page.click('#LogonMaam1_EmTwbCtlLogonMaam_BtnSubmit');
