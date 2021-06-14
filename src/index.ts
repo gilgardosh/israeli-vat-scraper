@@ -27,7 +27,7 @@ const updateConfig = (config: Partial<Config>): void => {
   }
 };
 
-const scraper = async (
+const vatScraper = async (
   credentials?: UserCredentials,
   config: Partial<Config> = {}
 ): Promise<Report[]> => {
@@ -49,4 +49,4 @@ const scraper = async (
   }
 };
 
-export default scraper;
+export default vatScraper;
