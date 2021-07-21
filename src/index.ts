@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
-import { Config, Report } from './utils/types.js';
+import { Config, Report, UserCredentials } from './utils/types.js';
 import { homePageHandler } from './handlers/mainPageHandler.js';
+import {
+  getEnvCredentials,
+  updateCredentials,
+} from './handlers/loginHandler.js';
+import { validateSchema } from './utils/schemaValidator.js';
+import schema from './vatSchema.json';
 
 dotenv.config();
 
@@ -8,6 +14,7 @@ const _config: Config = {
   visibleBrowser: false,
   expandData: true,
   sortDescending: false,
+  validate: true,
 };
 
 const updateConfig = (config: Partial<Config>): void => {
@@ -20,11 +27,20 @@ const updateConfig = (config: Partial<Config>): void => {
   }
 };
 
-const scraper = async (config: Partial<Config> = {}): Promise<Report[]> => {
+const vatScraper = async (
+  credentials?: UserCredentials,
+  config: Partial<Config> = {}
+): Promise<Report[]> => {
   try {
+    updateCredentials(credentials || getEnvCredentials());
     updateConfig(config);
 
     const reports = await homePageHandler(_config);
+
+    if (_config.validate) {
+      const validation = await validateSchema(schema, reports);
+      console.log(validation);
+    }
 
     return reports;
   } catch (e) {
@@ -33,4 +49,4 @@ const scraper = async (config: Partial<Config> = {}): Promise<Report[]> => {
   }
 };
 
-export default scraper;
+export default vatScraper;

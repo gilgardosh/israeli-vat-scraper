@@ -112,4 +112,11 @@ export interface Config {
   visibleBrowser: boolean;
   expandData: boolean;
   sortDescending: boolean;
+  validate: boolean;
+}
+
+export interface UserCredentials {
+  vatNumber: string;
+  userCode: string;
+  userPass: string;
 }
