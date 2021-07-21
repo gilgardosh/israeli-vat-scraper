@@ -1,6 +1,6 @@
 {
   "name": "israeli-vat-scraper",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Scraper app for fetching Israeli VAT data",
   "type": "module",
   "main": "dist/index.js",
@@ -38,11 +38,11 @@
     "puppeteer": "10.1.0"
   },
   "devDependencies": {
-    "@types/node": "15.6.2",
+    "@types/node": "16.4.0",
     "@types/puppeteer": "5.4.4",
-    "@typescript-eslint/eslint-plugin": "4.28.2",
-    "@typescript-eslint/parser": "4.28.2",
-    "eslint": "7.30.0",
+    "@typescript-eslint/eslint-plugin": "4.28.4",
+    "@typescript-eslint/parser": "4.28.4",
+    "eslint": "7.31.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "prettier": "2.3.2",
