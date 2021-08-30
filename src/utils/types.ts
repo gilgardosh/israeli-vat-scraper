@@ -113,6 +113,8 @@ export interface Config {
   expandData: boolean;
   sortDescending: boolean;
   validate: boolean;
+  printErrors: boolean;
+  years?: number[];
 }
 
 export interface UserCredentials {
