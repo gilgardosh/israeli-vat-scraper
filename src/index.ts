@@ -10,43 +10,50 @@ import schema from './vatSchema.json';
 
 dotenv.config();
 
-const _config: Config = {
+const defaultConfig: Config = {
   visibleBrowser: false,
   expandData: true,
   sortDescending: false,
   validate: true,
-};
-
-const updateConfig = (config: Partial<Config>): void => {
-  if (Object.keys(config).length === 0) {
-    return;
-  }
-
-  for (const key in config) {
-    _config[key as keyof Config] = config[key as keyof Config] as boolean;
-  }
+  printErrors: true,
+  years: undefined,
 };
 
 const vatScraper = async (
   credentials?: UserCredentials,
-  config: Partial<Config> = {}
+  userConfig: Partial<Config> = {}
 ): Promise<Report[]> => {
   try {
     updateCredentials(credentials || getEnvCredentials());
-    updateConfig(config);
+    const config = { ...defaultConfig, ...userConfig };
 
-    const reports = await homePageHandler(_config);
+    const reports = await homePageHandler(config);
 
-    if (_config.validate) {
+    if (config.validate) {
       const validation = await validateSchema(schema, reports);
       console.log(validation);
     }
 
     return reports;
   } catch (e) {
-    console.log(e);
-    throw new Error(`VatScraper - ${e.message}`);
+    console.error(e);
+    throw new Error(`VatScraper - ${e}`);
   }
 };
 
 export default vatScraper;
+
+const test = async () => {
+  const data = await vatScraper(undefined, {
+    visibleBrowser: false,
+    validate: true,
+    expandData: true,
+    printErrors: true,
+    // years: [2018, 2019, 2020, 2021],
+  });
+
+  console.log(JSON.stringify(data, null, '  '));
+  return;
+};
+
+test();

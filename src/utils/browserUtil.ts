@@ -1,28 +1,46 @@
 import puppeteer, { Page } from 'puppeteer';
 import { login } from '../handlers/loginHandler.js';
-import { waitForSelectorPlus } from './pageUtil.js';
-import { Config } from './types.js';
+import { waitAndClick, waitForSelectorPlus } from './pageUtil.js';
+
+export const newPageByMonth = async (
+  showBrowser: boolean,
+  year: string,
+  monthIndex: number
+): Promise<Page> => {
+  try {
+    const page = await newPageByYear(showBrowser, year);
+
+    const selector = `#dgDuchot > tbody > tr:nth-child(${
+      monthIndex + 2
+    }) > td:nth-child(1) > a`;
+    await waitAndClick(page, selector);
+
+    return page;
+  } catch (e) {
+    throw new Error(`newPageByYear - ${e}`);
+  }
+};
 
 export const newPageByYear = async (
-  config: Config,
+  showBrowser: boolean,
   year: string
 ): Promise<Page> => {
   try {
-    const page = await newHomePage(config);
+    const page = await newHomePage(showBrowser);
 
     await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
     await page.select('#ContentUsersPage_DdlTkufa', year);
 
     return page;
   } catch (e) {
-    throw new Error(`newPageByYear - ${e.message}`);
+    throw new Error(`newPageByYear - ${e}`);
   }
 };
 
-export const newHomePage = async (config: Config): Promise<Page> => {
+export const newHomePage = async (showBrowser: boolean): Promise<Page> => {
   try {
     const browser = await puppeteer.launch({
-      headless: !config.visibleBrowser,
+      headless: !showBrowser,
     });
     const page = (await browser.pages())[0];
     await page.setUserAgent(
@@ -37,6 +55,6 @@ export const newHomePage = async (config: Config): Promise<Page> => {
 
     return page;
   } catch (e) {
-    throw new Error(`newHomePage - ${e.message}`);
+    throw new Error(`newHomePage - ${e}`);
   }
 };

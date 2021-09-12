@@ -12,8 +12,8 @@ export const validateSchema = async (
   try {
     valid = ajv.validate(jsonSchema, data);
   } catch (e) {
-    console.log(e);
-    return { isValid: false, errors: e };
+    console.error(e);
+    return { isValid: false, errors: [e as ErrorObject] };
   }
 
   return { isValid: valid, errors: ajv.errors };
