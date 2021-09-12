@@ -2,11 +2,14 @@ import { newHomePage } from '../utils/browserUtil.js';
 import { parseDate } from '../utils/dates.js';
 import { getSelectOptions, waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, Report } from '../utils/types.js';
-import { reportsYearHandler } from './reportHandler.js';
+import { UserPrompt } from '../utils/userPrompt.js';
+import { YearHandler } from './yearHandler.js';
 
 export const homePageHandler = async (config: Config): Promise<Report[]> => {
   try {
-    const page = await newHomePage(config);
+    const prompt = new UserPrompt();
+
+    const page = await newHomePage(config.visibleBrowser);
     console.log('Logged in');
 
     await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
@@ -21,7 +24,13 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
 
     await Promise.all(
       taxYears.map(async (year) => {
-        return await reportsYearHandler(config, year.value);
+        if (!config.years || config.years.includes(parseInt(year.value))) {
+          const reportsYearHandler = new YearHandler(config, prompt, [
+            year.value,
+          ]);
+          return await reportsYearHandler.handle();
+        }
+        return [];
       })
     ).then((reportsLists) => {
       reportsLists.forEach((list) => {
@@ -37,8 +46,12 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
             1) || -1
     );
 
+    if (config.printErrors) {
+      prompt.printErrors();
+    }
+
     return reports;
   } catch (e) {
-    throw new Error(`reportsHandler - ${e.message}`);
+    throw new Error(`reportsHandler - ${e}`);
   }
 };

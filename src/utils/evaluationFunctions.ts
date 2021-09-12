@@ -54,7 +54,6 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
     fileInvoiceRecord: getInnerData(13),
   };
 
-  console.log(details);
   return details;
 };
 

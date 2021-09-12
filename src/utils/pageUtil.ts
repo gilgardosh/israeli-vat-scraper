@@ -33,7 +33,7 @@ export const waitAndClick = async (
 ): Promise<void> => {
   const button = await waitForSelectorPlus(page, selector);
   if (!button) {
-    console.log(`Error finding button by selector ${selector}`);
+    console.error(`Error finding button by selector ${selector}`);
     return;
   }
   await button.click();
