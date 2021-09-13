@@ -42,18 +42,3 @@ const vatScraper = async (
 };
 
 export default vatScraper;
-
-const test = async () => {
-  const data = await vatScraper(undefined, {
-    visibleBrowser: false,
-    validate: true,
-    expandData: true,
-    printErrors: true,
-    // years: [2018, 2019, 2020, 2021],
-  });
-
-  console.log(JSON.stringify(data, null, '  '));
-  return;
-};
-
-test();
