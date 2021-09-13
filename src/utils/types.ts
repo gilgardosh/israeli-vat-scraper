@@ -1,111 +1,348 @@
 export interface Report {
-  submissionPeriod: string; //תקופת הדיווח
-  type: string; //סוג הדוח
-  corectness: string; //תקינות
-  reportedAmount: number; //סכום מדווח
-  submissionDate: string; //תאריך הגשה
-  route: string; //מסלול
-  isFixed: boolean; //האם תוקן
-  additionalDetails?: ReportDetails; //פרטים נוספים
-  reportExpansion?: ReportExpansion; // פירוט הדוח
+  /**
+   * תקופת הדיווח
+   */
+  submissionPeriod: string;
+  /**
+   * סוג הדוח
+   */
+  type: string;
+  /**
+   * תקינות
+   */
+  corectness: string;
+  /**
+   * סכום מדווח
+   */
+  reportedAmount: number;
+  /**
+   * תאריך הגשה
+   */
+  submissionDate: string;
+  /**
+   * מסלול
+   */
+  route: string;
+  /**
+   * האם תוקן
+   */
+  isFixed: boolean;
+  /**
+   * פרטים נוספים
+   */
+  additionalDetails?: ReportDetails;
+  /**
+   *  פירוט הדוח
+   */
+  reportExpansion?: ReportExpansion;
 }
 
 export interface ReportDetails {
-  osekNum: string; // מספר עוסק
-  osekName: string; // שם עוסק	אורי גולדשטיין בע"מ
-  regionalCommissioner: string; // ממונה אזורי
-  reportingPeriod: string; // תקופת הדווח
-  reportingOrigin: string; // מקור הדווח
-  reportingDate: string; // תאריך הדווח
-  reportingStatus: string; // מצב הדווח
-  taxableTransactions: number; // עסקאות חייבות
-  taxableTransactionsVat: number; // מע"מ עסקאות חייבות
-  exemptTransactions: number; // עסקאות פטורות / אפס
-  equipmentInputs: number; // תשומות ציוד
-  otherInputs: number; // תשומות אחרות
-  refundAmount: number; // סכום להחזר
-  fileInvoiceRecord: string; // רשומת חשבונית מהקובץ
+  /**
+   * מספר עוסק
+   */
+  osekNum: string;
+  /**
+   * שם עוסק	אורי גולדשטיין בע"מ
+   */
+  osekName: string;
+  /**
+   * ממונה אזורי
+   */
+  regionalCommissioner: string;
+  /**
+   * תקופת הדווח
+   */
+  reportingPeriod: string;
+  /**
+   * מקור הדווח
+   */
+  reportingOrigin: string;
+  /**
+   * תאריך הדווח
+   */
+  reportingDate: string;
+  /**
+   * מצב הדווח
+   */
+  reportingStatus: string;
+  /**
+   * עסקאות חייבות
+   */
+  taxableTransactions: number;
+  /**
+   * מע"מ עסקאות חייבות
+   */
+  taxableTransactionsVat: number;
+  /**
+   * עסקאות פטורות / אפס
+   */
+  exemptTransactions: number;
+  /**
+   * תשומות ציוד
+   */
+  equipmentInputs: number;
+  /**
+   * תשומות אחרות
+   */
+  otherInputs: number;
+  /**
+   * סכום להחזר
+   */
+  refundAmount: number;
+  /**
+   * רשומת חשבונית מהקובץ
+   */
+  fileInvoiceRecord: string;
 }
 
 export interface ReportExpansion {
-  reportingPeriod: string; // תקופת הדווח
-  reportingOrigin: string; // מקור הדווח
-  reportingDate: string; // תאריך הדווח
-  taxableTransactions: number; // עסקאות חייבות
-  taxableTransactionsVat: number; // מע"מ עסקאות חייבות
-  exemptTransactions: number; // עסקאות פטורות / אפס
-  equipmentInputs: number; // תשומות ציוד
-  otherInpute: number; // תשומות אחרות
-  refundAmount: number; // סכום להחזר
-  inputs?: ReportInputs; // תשומות
-  deals?: ReportDeals; // עסקאות
-  fixedInvoices?: ReportFixedInvoice[]; // חשבוניות שתוקנו
+  /**
+   * תקופת הדווח
+   */
+  reportingPeriod: string;
+  /**
+   * מקור הדווח
+   */
+  reportingOrigin: string;
+  /**
+   * תאריך הדווח
+   */
+  reportingDate: string;
+  /**
+   * עסקאות חייבות
+   */
+  taxableTransactions: number;
+  /**
+   * מע"מ עסקאות חייבות
+   */
+  taxableTransactionsVat: number;
+  /**
+   * עסקאות פטורות / אפס
+   */
+  exemptTransactions: number;
+  /**
+   * תשומות ציוד
+   */
+  equipmentInputs: number;
+  /**
+   * תשומות אחרות
+   */
+  otherInpute: number;
+  /**
+   * סכום להחזר
+   */
+  refundAmount: number;
+  /**
+   * תשומות
+   */
+  inputs?: ReportInputs;
+  /**
+   * עסקאות
+   */
+  deals?: ReportDeals;
+  /**
+   * חשבוניות שתוקנו
+   */
+  fixedInvoices?: ReportFixedInvoice[];
 }
 
 export interface ReportInputs {
-  regularInput: ReportRecordCategories; // תשומה רגילה
-  pettyCash: ReportRecordCategories; // קופה קטנה
-  selfInvoiceInput: ReportRecordCategories; // חשבונית עצמית (תשומה)
-  importList: ReportRecordCategories; // רשימון יבוא
-  rashapSupplier: ReportRecordCategories; // ספק רש"פ
-  otherDocument: ReportRecordCategories; // מסמך אחר
-  total: ReportRecordCategories; // סה"כ
+  /**
+   * תשומה רגילה
+   */
+  regularInput: ReportRecordCategories;
+  /**
+   * קופה קטנה
+   */
+  pettyCash: ReportRecordCategories;
+  /**
+   * חשבונית עצמית (תשומה)
+   */
+  selfInvoiceInput: ReportRecordCategories;
+  /**
+   * רשימון יבוא
+   */
+  importList: ReportRecordCategories;
+  /**
+   * ספק רש"פ
+   */
+  rashapSupplier: ReportRecordCategories;
+  /**
+   * מסמך אחר
+   */
+  otherDocument: ReportRecordCategories;
+  /**
+   * סה"כ
+   */
+  total: ReportRecordCategories;
 }
 
 export interface ReportDeals {
-  regularDealRecognized: ReportRecordCategories; // עסקה רגילה - מזוהה
-  zeroDealRecognized: ReportRecordCategories; // עסקה אפס - מזוהה
-  regularDealUnrecognized: ReportRecordCategories; // עסקה רגילה - לא מזוהה
-  zeroDealUnrecognized: ReportRecordCategories; // עסקה אפס - לא מזוהה
-  selfInvoiceDeal: ReportRecordCategories; // חשבונית עצמית (עסקה)
-  listExport: ReportRecordCategories; // רשימון יצוא
-  servicesExport: ReportRecordCategories; // יצוא שירותים
-  rashapClient: ReportRecordCategories; // לקוח רש"פ
-  total: ReportRecordCategories; // סה"כ
+  /**
+   * עסקה רגילה - מזוהה
+   */
+  regularDealRecognized: ReportRecordCategories;
+  /**
+   * עסקה אפס - מזוהה
+   */
+  zeroDealRecognized: ReportRecordCategories;
+  /**
+   * עסקה רגילה - לא מזוהה
+   */
+  regularDealUnrecognized: ReportRecordCategories;
+  /**
+   * עסקה אפס - לא מזוהה
+   */
+  zeroDealUnrecognized: ReportRecordCategories;
+  /**
+   * חשבונית עצמית (עסקה)
+   */
+  selfInvoiceDeal: ReportRecordCategories;
+  /**
+   * רשימון יצוא
+   */
+  listExport: ReportRecordCategories;
+  /**
+   * יצוא שירותים
+   */
+  servicesExport: ReportRecordCategories;
+  /**
+   * לקוח רש"פ
+   */
+  rashapClient: ReportRecordCategories;
+  /**
+   * סה"כ
+   */
+  total: ReportRecordCategories;
 }
 
 export interface ReportRecordCategories {
-  received: ReportRecordColumns; // נתקבל (100%)
-  incorrect: ReportRecordColumns; // שגוי
-  total: ReportRecordColumns; // סיכום
+  /**
+   * נתקבל (100%)
+   */
+  received: ReportRecordColumns;
+  /**
+   * שגוי
+   */
+  incorrect: ReportRecordColumns;
+  /**
+   * סיכום
+   */
+  total: ReportRecordColumns;
 }
 
 export interface ReportRecordColumns {
-  transactionsNum: number; // מס' תנועות
-  vatAmount: number; // סכום מע"מ
-  beforeVatAmount: number; // סכום לפני מע"מ
+  /**
+   * מס' תנועות
+   */
+  transactionsNum: number;
+  /**
+   * סכום מע"מ
+   */
+  vatAmount: number;
+  /**
+   * סכום לפני מע"מ
+   */
+  beforeVatAmount: number;
   transactions?: ReportInputTransaction[];
 }
 
 export interface ReportInputTransaction {
-  type: string; // סוג רשומה
-  referenceNum: string; // מספר אסמכתא
-  invoiceDate: string; // תאריך החשבונית
-  vatAmount: number; // סכום המע"מ
-  amount: number; // סכום
-  supplierOrList: string; // ספק / רשימון
-  errorDescription: string; // תאור שגיאה
-  details?: ReportInputTransactionDetails; // פרטים נוספים
+  /**
+   * סוג רשומה
+   */
+  type: string;
+  /**
+   * מספר אסמכתא
+   */
+  referenceNum: string;
+  /**
+   * תאריך החשבונית
+   */
+  invoiceDate: string;
+  /**
+   * סכום המע"מ
+   */
+  vatAmount: number;
+  /**
+   * סכום
+   */
+  amount: number;
+  /**
+   * ספק / רשימון
+   */
+  supplierOrList: string;
+  /**
+   * תאור שגיאה
+   */
+  errorDescription: string;
+  /**
+   * פרטים נוספים
+   */
+  details?: ReportInputTransactionDetails;
 }
 
 export interface ReportInputTransactionDetails {
-  type: string; // סוג רשומה
-  invoiceNum: string; // מספר חשבונית
-  referenceGroup: string; // קבוצת אסמכתא
-  invoiceDate: string; // תאריך החשבונית
-  vatAmount: number; // סכום המע"מ
-  amount: number; // סכום
-  supplierOrList: string; // ספק / רשימון
+  /**
+   * סוג רשומה
+   */
+  type: string;
+  /**
+   * מספר חשבונית
+   */
+  invoiceNum: string;
+  /**
+   * קבוצת אסמכתא
+   */
+  referenceGroup: string;
+  /**
+   * תאריך החשבונית
+   */
+  invoiceDate: string;
+  /**
+   * סכום המע"מ
+   */
+  vatAmount: number;
+  /**
+   * סכום
+   */
+  amount: number;
+  /**
+   * ספק / רשימון
+   */
+  supplierOrList: string;
 }
 
 export interface ReportFixedInvoice {
-  type: string; // סוג
-  referenceNum: string; // מס' אסמכתא
-  invoiceDate: string; // תאריך החשבונית
-  invoiceAmount: number; // סכום החשבונית
-  vatAmount: number; // סכום המע'מ
-  expenderOrRecoever: string; // מוציא/מקבל
-  fixDetails: string; // פרטי תיקון
+  /**
+   * סוג
+   */
+  type: string;
+  /**
+   * מס' אסמכתא
+   */
+  referenceNum: string;
+  /**
+   * תאריך החשבונית
+   */
+  invoiceDate: string;
+  /**
+   * סכום החשבונית
+   */
+  invoiceAmount: number;
+  /**
+   * סכום המע'מ
+   */
+  vatAmount: number;
+  /**
+   * מוציא/מקבל
+   */
+  expenderOrRecoever: string;
+  /**
+   * פרטי תיקון
+   */
+  fixDetails: string;
 }
 
 export interface Config {
