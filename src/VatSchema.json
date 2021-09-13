@@ -1,7 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "array",
-  "additionalItems": false,
   "items": {
     "type": "object",
     "additionalProperties": false,
@@ -398,7 +397,6 @@
         },
         "transactions": {
           "type": "array",
-          "additionalItems": false,
           "items": {
             "type": "object",
             "additionalProperties": false,
