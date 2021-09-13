@@ -68,7 +68,7 @@ export const getReportExpansionTitle = (
     taxableTransactionsVat: parseInt(table.rows[1].cells[3].innerText),
     exemptTransactions: parseInt(table.rows[1].cells[5].innerText),
     equipmentInputs: parseInt(table.rows[2].cells[1].innerText),
-    otherInpute: parseInt(table.rows[2].cells[3].innerText),
+    otherInputs: parseInt(table.rows[2].cells[3].innerText),
     refundAmount: parseInt(table.rows[2].cells[5].innerText),
   };
 

@@ -128,7 +128,7 @@ export interface ReportExpansion {
   /**
    * תשומות אחרות
    */
-  otherInpute: number;
+  otherInputs: number;
   /**
    * סכום להחזר
    */
