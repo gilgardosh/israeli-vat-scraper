@@ -9,11 +9,18 @@ export class YearHandler {
   private config: Config;
   private prompt: UserPrompt;
   private location: string[];
+  private months: number[] | null = null;
 
-  constructor(config: Config, prompt: UserPrompt, location: string[]) {
+  constructor(
+    config: Config,
+    prompt: UserPrompt,
+    location: string[],
+    months: number[] | null = null
+  ) {
     this.config = config;
     this.prompt = prompt;
     this.location = location;
+    this.months = months;
   }
 
   public handle = async (): Promise<Report[]> => {
@@ -30,18 +37,26 @@ export class YearHandler {
       const reports: Report[] = [];
 
       await Promise.all(
-        baseYearTable.map(async (report: Report, i: number) => {
-          const monthHandler = new MonthHandler(
-            this.config,
-            this.prompt,
-            this.location,
-            report,
-            i
-          );
+        baseYearTable
+          .filter(
+            (report) =>
+              !this.months ||
+              this.months.includes(
+                parseInt(report.submissionPeriod.substr(0, 2))
+              )
+          )
+          .map(async (report: Report, i: number) => {
+            const monthHandler = new MonthHandler(
+              this.config,
+              this.prompt,
+              this.location,
+              report,
+              i
+            );
 
-          report = (await monthHandler.handle()) || report;
-          return report;
-        })
+            report = (await monthHandler.handle()) || report;
+            return report;
+          })
       ).then((reportsList) => {
         reports.push(...reportsList);
       });

@@ -109,12 +109,44 @@ export interface ReportFixedInvoice {
 }
 
 export interface Config {
+  /**
+   * Defines whether scraping browser will be visible
+   * default: false
+   */
   visibleBrowser: boolean;
+  /**
+   * Defines whether to fetch reportExpansion data
+   * default: true
+   */
   expandData: boolean;
+  /**
+   * Results are sorted ascending by default.
+   * Raising this flag will sort data in descending order
+   * default: false
+   */
   sortDescending: boolean;
+  /**
+   * Defined whether the data will be schema-validated.
+   * default: true
+   */
   validate: boolean;
+  /**
+   * Occasionally, an error might accure in one of the sub-fields fetch proccess.
+   * The app will not stop for errors, but move on.
+   * This flag will print all this runtime errors, if any.
+   * default: true
+   */
   printErrors: boolean;
-  years?: number[];
+  /**
+   * Optional config. limits the data being fetched to specific years or months.
+   * Example of fetching all months of 2019-2020:
+   *   [2019, 2020]
+   * User can also select months, by replacing the year number with a tuple of year and months array.
+   * For example, for fetching Jan-Feb of years 2019-2020:
+   *   [ [2019, [1, 2]], [2020, [1, 2]] ]
+   * default is null (no limitation, fetch all).
+   */
+  years?: (number | [number, number[]])[];
 }
 
 export interface UserCredentials {
