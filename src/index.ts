@@ -6,7 +6,7 @@ import {
   updateCredentials,
 } from './handlers/loginHandler.js';
 import { validateSchema } from './utils/schemaValidator.js';
-import schema from './vatSchema.json';
+import { createRequire } from 'module';
 
 dotenv.config();
 
@@ -30,6 +30,8 @@ const vatScraper = async (
     const reports = await homePageHandler(config);
 
     if (config.validate) {
+      const requireFile = createRequire(import.meta.url); // construct the require method
+      const schema = requireFile('./vatSchema.json'); // use the require method
       const validation = await validateSchema(schema, reports);
       console.log(validation);
     }
