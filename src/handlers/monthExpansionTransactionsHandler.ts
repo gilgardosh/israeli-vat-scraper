@@ -54,7 +54,7 @@ export class monthExpansionTransactionsHandler {
       this.prompt.update(this.location, 'Done');
       return transactions;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return [];
     }
   };
@@ -81,7 +81,10 @@ export class monthExpansionTransactionsHandler {
       await waitAndClick(this.page, '#BtnCloseDlgPrtNsf');
       return details;
     } catch (e) {
-      this.prompt.addError([...this.location, 'Details'], e);
+      this.prompt.addError(
+        [...this.location, 'Details'],
+        (e as Error)?.message || e
+      );
       return;
     }
   };

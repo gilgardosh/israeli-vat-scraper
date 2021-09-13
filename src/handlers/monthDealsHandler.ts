@@ -86,7 +86,7 @@ export class MonthDealsHandler {
       this.prompt.update(this.location, 'Done');
       return dealsData;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return;
     }
   };

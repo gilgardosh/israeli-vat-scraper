@@ -84,7 +84,7 @@ export class MonthInputsHandler {
       this.prompt.update(this.location, 'Done');
       return inputsData;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return;
     }
   };

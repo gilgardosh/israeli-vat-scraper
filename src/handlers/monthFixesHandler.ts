@@ -56,7 +56,7 @@ export class MonthFixesHandler {
       this.prompt.update(this.location, 'Done');
       return fixes;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return;
     }
   };

@@ -64,7 +64,7 @@ export class YearHandler {
       this.prompt.update(this.location, 'Done');
       return reports;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return [];
     }
   };

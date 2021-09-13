@@ -42,8 +42,8 @@ export class MonthHandler {
       // get report details
       this.prompt.update(this.location, 'Fetching details');
       this.report.additionalDetails =
-        await this.getReportAdditionalDetails().catch((e) => {
-          this.prompt.addError(this.location, e);
+        await this.getReportAdditionalDetails().catch((e: Error) => {
+          this.prompt.addError(this.location, e.message);
           return undefined;
         });
 
@@ -56,7 +56,7 @@ export class MonthHandler {
       this.prompt.update(this.location, 'Done');
       return this.report;
     } catch (e) {
-      this.prompt.addError(this.location, e);
+      this.prompt.addError(this.location, (e as Error)?.message || e);
       return;
     }
   };
@@ -133,7 +133,10 @@ export class MonthHandler {
 
       return reportExpansion;
     } catch (e) {
-      this.prompt.addError([...this.location, 'Expansions'], e);
+      this.prompt.addError(
+        [...this.location, 'Expansions'],
+        (e as Error)?.message || e
+      );
       return;
     }
   };
@@ -169,7 +172,7 @@ export class MonthHandler {
       this.prompt.update(location, 'Done');
       return reportExpansion;
     } catch (e) {
-      this.prompt.addError(location, e);
+      this.prompt.addError(location, (e as Error)?.message || e);
       return;
     }
   };
