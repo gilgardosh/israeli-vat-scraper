@@ -14,13 +14,17 @@ import {
 export const getReportsTable = (table: HTMLTableElement): Report[] => {
   const tableData: Report[] = [];
 
+  const getFloat = (raw: string) => {
+    return parseFloat(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const rowData: Report = {
       submissionPeriod: tableRow.cells[0].innerText,
       type: tableRow.cells[1].innerText,
       corectness: tableRow.cells[2].innerText,
-      reportedAmount: parseFloat(tableRow.cells[3].innerText),
+      reportedAmount: getFloat(tableRow.cells[3].innerText),
       submissionDate: tableRow.cells[4].innerText,
       route: tableRow.cells[5].innerText,
       isFixed: tableRow.cells[6].innerText.includes('ת'),
@@ -37,6 +41,10 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
     return table.rows[rowNum].cells[1].innerText;
   };
 
+  const getInt = (raw: string) => {
+    return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   const details: ReportDetails = {
     osekNum: getInnerData(0),
     osekName: getInnerData(1),
@@ -45,12 +53,12 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
     reportingOrigin: getInnerData(4),
     reportingDate: getInnerData(5),
     reportingStatus: getInnerData(6),
-    taxableTransactions: parseInt(getInnerData(7).replace(/\D/g, '')),
-    taxableTransactionsVat: parseInt(getInnerData(8).replace(/\D/g, '')),
-    exemptTransactions: parseInt(getInnerData(9).replace(/\D/g, '')),
-    equipmentInputs: parseInt(getInnerData(10).replace(/\D/g, '')),
-    otherInputs: parseInt(getInnerData(11).replace(/\D/g, '')),
-    refundAmount: parseInt(getInnerData(12).replace(/\D/g, '')),
+    taxableTransactions: getInt(getInnerData(7)),
+    taxableTransactionsVat: getInt(getInnerData(8)),
+    exemptTransactions: getInt(getInnerData(9)),
+    equipmentInputs: getInt(getInnerData(10)),
+    otherInputs: getInt(getInnerData(11)),
+    refundAmount: getInt(getInnerData(12)),
     fileInvoiceRecord: getInnerData(13),
   };
 
@@ -60,24 +68,20 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
 export const getReportExpansionTitle = (
   table: HTMLTableElement
 ): ReportExpansion => {
+  const getInt = (raw: string) => {
+    return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   const tableData: ReportExpansion = {
     reportingPeriod: table.rows[0].cells[1].innerText,
     reportingOrigin: table.rows[0].cells[3].innerText,
     reportingDate: table.rows[0].cells[5].innerText,
-    taxableTransactions: parseInt(
-      table.rows[1].cells[1].innerText.replace(/\D/g, '')
-    ),
-    taxableTransactionsVat: parseInt(
-      table.rows[1].cells[3].innerText.replace(/\D/g, '')
-    ),
-    exemptTransactions: parseInt(
-      table.rows[1].cells[5].innerText.replace(/\D/g, '')
-    ),
-    equipmentInputs: parseInt(
-      table.rows[2].cells[1].innerText.replace(/\D/g, '')
-    ),
-    otherInputs: parseInt(table.rows[2].cells[3].innerText.replace(/\D/g, '')),
-    refundAmount: parseInt(table.rows[2].cells[5].innerText.replace(/\D/g, '')),
+    taxableTransactions: getInt(table.rows[1].cells[1].innerText),
+    taxableTransactionsVat: getInt(table.rows[1].cells[3].innerText),
+    exemptTransactions: getInt(table.rows[1].cells[5].innerText),
+    equipmentInputs: getInt(table.rows[2].cells[1].innerText),
+    otherInputs: getInt(table.rows[2].cells[3].innerText),
+    refundAmount: getInt(table.rows[2].cells[5].innerText),
   };
 
   return tableData;
@@ -90,12 +94,14 @@ export const getReportExpansionInputs = (
     row: HTMLTableRowElement,
     index: number
   ): ReportRecordColumns => {
+    const getInt = (raw: string) => {
+      return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+    };
+
     return {
-      transactionsNum: parseInt(row.cells[index].innerText.replace(/\D/g, '')),
-      vatAmount: parseInt(row.cells[index + 1].innerText.replace(/\D/g, '')),
-      beforeVatAmount: parseInt(
-        row.cells[index + 2].innerText.replace(/\D/g, '')
-      ),
+      transactionsNum: getInt(row.cells[index].innerText),
+      vatAmount: getInt(row.cells[index + 1].innerText),
+      beforeVatAmount: getInt(row.cells[index + 2].innerText),
     };
   };
 
@@ -125,14 +131,18 @@ export const getReportExpansionInputTransactions = (
 ): ReportInputTransaction[] => {
   const transactionsData: ReportInputTransaction[] = [];
 
+  const getInt = (raw: string) => {
+    return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const transaction: ReportInputTransaction = {
       type: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
-      vatAmount: parseInt(tableRow.cells[3].innerText.replace(/\D/g, '')),
-      amount: parseInt(tableRow.cells[4].innerText.replace(/\D/g, '')),
+      vatAmount: getInt(tableRow.cells[3].innerText),
+      amount: getInt(tableRow.cells[4].innerText),
       supplierOrList: tableRow.cells[5].innerText,
       errorDescription: tableRow.cells[6].innerText,
     };
@@ -146,13 +156,17 @@ export const getReportExpansionInputTransactions = (
 export const getReportExpansionInputTransactionDetails = (
   table: HTMLTableElement
 ): ReportInputTransactionDetails => {
+  const getInt = (raw: string) => {
+    return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   const tableData: ReportInputTransactionDetails = {
     type: table.rows[0].cells[1].innerText,
     invoiceNum: table.rows[1].cells[1].innerText,
     referenceGroup: table.rows[2].cells[1].innerText,
     invoiceDate: table.rows[3].cells[1].innerText,
-    vatAmount: parseInt(table.rows[4].cells[1].innerText.replace(/\D/g, '')),
-    amount: parseInt(table.rows[5].cells[1].innerText.replace(/\D/g, '')),
+    vatAmount: getInt(table.rows[4].cells[1].innerText),
+    amount: getInt(table.rows[5].cells[1].innerText),
     supplierOrList: table.rows[6].cells[1].innerText,
   };
 
@@ -166,12 +180,14 @@ export const getReportExpansionDeals = (
     row: HTMLTableRowElement,
     index: number
   ): ReportRecordColumns => {
+    const getInt = (raw: string) => {
+      return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+    };
+
     return {
-      transactionsNum: parseInt(row.cells[index].innerText.replace(/\D/g, '')),
-      vatAmount: parseInt(row.cells[index + 1].innerText.replace(/\D/g, '')),
-      beforeVatAmount: parseInt(
-        row.cells[index + 2].innerText.replace(/\D/g, '')
-      ),
+      transactionsNum: getInt(row.cells[index].innerText),
+      vatAmount: getInt(row.cells[index + 1].innerText),
+      beforeVatAmount: getInt(row.cells[index + 2].innerText),
     };
   };
 
@@ -203,14 +219,18 @@ export const getReportExpansionFixes = (
 ): ReportFixedInvoice[] => {
   const fixesData: ReportFixedInvoice[] = [];
 
+  const getInt = (raw: string) => {
+    return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
+  };
+
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const fix: ReportFixedInvoice = {
       type: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
-      invoiceAmount: parseInt(tableRow.cells[3].innerText.replace(/\D/g, '')),
-      vatAmount: parseInt(tableRow.cells[4].innerText.replace(/\D/g, '')),
+      invoiceAmount: getInt(tableRow.cells[3].innerText),
+      vatAmount: getInt(tableRow.cells[4].innerText),
       expenderOrRecoever: tableRow.cells[5].innerText,
       fixDetails: tableRow.cells[6].innerText,
     };
