@@ -45,12 +45,12 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
     reportingOrigin: getInnerData(4),
     reportingDate: getInnerData(5),
     reportingStatus: getInnerData(6),
-    taxableTransactions: parseInt(getInnerData(7)),
-    taxableTransactionsVat: parseInt(getInnerData(8)),
-    exemptTransactions: parseInt(getInnerData(9)),
-    equipmentInputs: parseInt(getInnerData(10)),
-    otherInputs: parseInt(getInnerData(11)),
-    refundAmount: parseInt(getInnerData(12)),
+    taxableTransactions: parseInt(getInnerData(7).replace(/\D/g, '')),
+    taxableTransactionsVat: parseInt(getInnerData(8).replace(/\D/g, '')),
+    exemptTransactions: parseInt(getInnerData(9).replace(/\D/g, '')),
+    equipmentInputs: parseInt(getInnerData(10).replace(/\D/g, '')),
+    otherInputs: parseInt(getInnerData(11).replace(/\D/g, '')),
+    refundAmount: parseInt(getInnerData(12).replace(/\D/g, '')),
     fileInvoiceRecord: getInnerData(13),
   };
 
@@ -64,12 +64,20 @@ export const getReportExpansionTitle = (
     reportingPeriod: table.rows[0].cells[1].innerText,
     reportingOrigin: table.rows[0].cells[3].innerText,
     reportingDate: table.rows[0].cells[5].innerText,
-    taxableTransactions: parseInt(table.rows[1].cells[1].innerText),
-    taxableTransactionsVat: parseInt(table.rows[1].cells[3].innerText),
-    exemptTransactions: parseInt(table.rows[1].cells[5].innerText),
-    equipmentInputs: parseInt(table.rows[2].cells[1].innerText),
-    otherInputs: parseInt(table.rows[2].cells[3].innerText),
-    refundAmount: parseInt(table.rows[2].cells[5].innerText),
+    taxableTransactions: parseInt(
+      table.rows[1].cells[1].innerText.replace(/\D/g, '')
+    ),
+    taxableTransactionsVat: parseInt(
+      table.rows[1].cells[3].innerText.replace(/\D/g, '')
+    ),
+    exemptTransactions: parseInt(
+      table.rows[1].cells[5].innerText.replace(/\D/g, '')
+    ),
+    equipmentInputs: parseInt(
+      table.rows[2].cells[1].innerText.replace(/\D/g, '')
+    ),
+    otherInputs: parseInt(table.rows[2].cells[3].innerText.replace(/\D/g, '')),
+    refundAmount: parseInt(table.rows[2].cells[5].innerText.replace(/\D/g, '')),
   };
 
   return tableData;
@@ -83,9 +91,11 @@ export const getReportExpansionInputs = (
     index: number
   ): ReportRecordColumns => {
     return {
-      transactionsNum: parseInt(row.cells[index].innerText),
-      vatAmount: parseInt(row.cells[index + 1].innerText),
-      beforeVatAmount: parseInt(row.cells[index + 2].innerText),
+      transactionsNum: parseInt(row.cells[index].innerText.replace(/\D/g, '')),
+      vatAmount: parseInt(row.cells[index + 1].innerText.replace(/\D/g, '')),
+      beforeVatAmount: parseInt(
+        row.cells[index + 2].innerText.replace(/\D/g, '')
+      ),
     };
   };
 
@@ -121,8 +131,8 @@ export const getReportExpansionInputTransactions = (
       type: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
-      vatAmount: parseInt(tableRow.cells[3].innerText),
-      amount: parseInt(tableRow.cells[4].innerText),
+      vatAmount: parseInt(tableRow.cells[3].innerText.replace(/\D/g, '')),
+      amount: parseInt(tableRow.cells[4].innerText.replace(/\D/g, '')),
       supplierOrList: tableRow.cells[5].innerText,
       errorDescription: tableRow.cells[6].innerText,
     };
@@ -141,8 +151,8 @@ export const getReportExpansionInputTransactionDetails = (
     invoiceNum: table.rows[1].cells[1].innerText,
     referenceGroup: table.rows[2].cells[1].innerText,
     invoiceDate: table.rows[3].cells[1].innerText,
-    vatAmount: parseInt(table.rows[4].cells[1].innerText),
-    amount: parseInt(table.rows[5].cells[1].innerText),
+    vatAmount: parseInt(table.rows[4].cells[1].innerText.replace(/\D/g, '')),
+    amount: parseInt(table.rows[5].cells[1].innerText.replace(/\D/g, '')),
     supplierOrList: table.rows[6].cells[1].innerText,
   };
 
@@ -157,9 +167,11 @@ export const getReportExpansionDeals = (
     index: number
   ): ReportRecordColumns => {
     return {
-      transactionsNum: parseInt(row.cells[index].innerText),
-      vatAmount: parseInt(row.cells[index + 1].innerText),
-      beforeVatAmount: parseInt(row.cells[index + 2].innerText),
+      transactionsNum: parseInt(row.cells[index].innerText.replace(/\D/g, '')),
+      vatAmount: parseInt(row.cells[index + 1].innerText.replace(/\D/g, '')),
+      beforeVatAmount: parseInt(
+        row.cells[index + 2].innerText.replace(/\D/g, '')
+      ),
     };
   };
 
@@ -197,8 +209,8 @@ export const getReportExpansionFixes = (
       type: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
-      invoiceAmount: parseInt(tableRow.cells[3].innerText),
-      vatAmount: parseInt(tableRow.cells[4].innerText),
+      invoiceAmount: parseInt(tableRow.cells[3].innerText.replace(/\D/g, '')),
+      vatAmount: parseInt(tableRow.cells[4].innerText.replace(/\D/g, '')),
       expenderOrRecoever: tableRow.cells[5].innerText,
       fixDetails: tableRow.cells[6].innerText,
     };
