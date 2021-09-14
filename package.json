@@ -1,6 +1,6 @@
 {
   "name": "israeli-vat-scraper",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Scraper app for fetching Israeli VAT data",
   "type": "module",
   "main": "dist/index.js",
