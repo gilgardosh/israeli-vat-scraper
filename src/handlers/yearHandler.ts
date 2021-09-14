@@ -38,28 +38,31 @@ export class YearHandler {
 
       await Promise.all(
         baseYearTable
+          .map((report: Report, i: number): [Report, number] => [report, i])
           .filter(
-            (report) =>
+            (item) =>
               !this.months ||
               this.months.includes(
-                parseInt(report.submissionPeriod.substr(0, 2))
+                parseInt(item[0].submissionPeriod.substr(0, 2))
               )
           )
-          .map(async (report: Report, i: number) => {
+          .map(async (item) => {
             const monthHandler = new MonthHandler(
               this.config,
               this.prompt,
               this.location,
-              report,
-              i
+              item[0],
+              item[1]
             );
 
-            report = (await monthHandler.handle()) || report;
+            const report = (await monthHandler.handle()) || item[0];
             return report;
           })
-      ).then((reportsList) => {
-        reports.push(...reportsList);
-      });
+      )
+        .then((reportsList) => reportsList.filter((report) => report))
+        .then((reportsList) => {
+          reports.push(...(reportsList as unknown as Report[]));
+        });
 
       this.prompt.update(this.location, 'Done');
       return reports;
