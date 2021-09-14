@@ -57,9 +57,8 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
     reports.sort(
       (a, b) =>
         (config.sortDescending
-          ? parseDate(a.submissionPeriod) < parseDate(b.submissionPeriod) && 1
-          : parseDate(a.submissionPeriod) > parseDate(b.submissionPeriod) &&
-            1) || -1
+          ? parseDate(a.reportMonth) < parseDate(b.reportMonth) && 1
+          : parseDate(a.reportMonth) > parseDate(b.reportMonth) && 1) || -1
     );
 
     if (config.printErrors) {

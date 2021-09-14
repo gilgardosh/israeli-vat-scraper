@@ -1,11 +1,11 @@
 import { newPageByMonth } from '../utils/browserUtil.js';
-import { getReportExpansionDeals } from '../utils/evaluationFunctions.js';
+import { getReportExpansionSales } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
-import { Config, ReportDeals } from '../utils/types.js';
+import { Config, ReportSales } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
-import { monthExpansionTransactionsHandler } from './monthExpansionTransactionsHandler.js';
+import { monthExpansionRecordsHandler } from './monthExpansionRecordsHandler.js';
 
-export class MonthDealsHandler {
+export class MonthSalesHandler {
   private config: Config;
   private prompt: UserPrompt;
   private location: string[];
@@ -19,11 +19,11 @@ export class MonthDealsHandler {
   ) {
     this.config = config;
     this.prompt = prompt;
-    this.location = [...location, 'Deals'];
+    this.location = [...location, 'Sales'];
     this.index = index;
   }
 
-  public handle = async (): Promise<ReportDeals | undefined> => {
+  public handle = async (): Promise<ReportSales | undefined> => {
     this.prompt.update(this.location, 'Fetching...');
     try {
       const page = await newPageByMonth(
@@ -34,29 +34,29 @@ export class MonthDealsHandler {
 
       await waitAndClick(page, '#ContentUsersPage_TabMenu1_LinkButton1');
 
-      const dealsTable = await waitForSelectorPlus(page, '#tblSikum');
-      const dealsData = await page.evaluate(
-        getReportExpansionDeals,
-        dealsTable
+      const salesTable = await waitForSelectorPlus(page, '#tblSikum');
+      const salesData = await page.evaluate(
+        getReportExpansionSales,
+        salesTable
       );
 
-      // get income transactions
-      for (const key in dealsData) {
+      // get income records
+      for (const key in salesData) {
         if (key === 'total') {
           continue;
         }
-        if (dealsData[key as keyof ReportDeals].received.transactionsNum > 0) {
+        if (salesData[key as keyof ReportSales].received.recordsCount > 0) {
           const index = ((): number | null => {
             switch (key) {
-              case 'regularDealRecognized':
+              case 'regularSaleRecognized':
                 return 3;
-              case 'zeroDealRecognized':
+              case 'zeroSaleRecognized':
                 return 4;
-              case 'regularDealUnrecognized':
+              case 'regularSaleUnrecognized':
                 return 5;
-              case 'zeroDealUnrecognized':
+              case 'zeroSaleUnrecognized':
                 return 6;
-              case 'selfInvoiceDeal':
+              case 'selfInvoiceSale':
                 return 7;
               case 'listExport':
                 return 8;
@@ -70,21 +70,21 @@ export class MonthDealsHandler {
           })();
 
           if (index) {
-            const transactionsHandler = new monthExpansionTransactionsHandler(
+            const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
               page,
               index
             );
-            dealsData[key as keyof ReportDeals].received.transactions =
-              await transactionsHandler.handle();
+            salesData[key as keyof ReportSales].received.records =
+              await recordsHandler.handle();
             [];
           }
         }
       }
 
       this.prompt.update(this.location, 'Done');
-      return dealsData;
+      return salesData;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
       return;

@@ -1,16 +1,13 @@
 import { Page } from 'puppeteer';
 import {
-  getReportExpansionInputTransactionDetails,
-  getReportExpansionInputTransactions,
+  getReportExpansionInputRecordDetails,
+  getReportExpansionInputRecords,
 } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
-import {
-  ReportInputTransaction,
-  ReportInputTransactionDetails,
-} from '../utils/types.js';
+import { ReportInputRecord, ReportInputRecordDetails } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
 
-export class monthExpansionTransactionsHandler {
+export class monthExpansionRecordsHandler {
   private prompt: UserPrompt;
   private location: string[];
   private page: Page;
@@ -23,12 +20,12 @@ export class monthExpansionTransactionsHandler {
     index: number
   ) {
     this.prompt = prompt;
-    this.location = [...location, 'Transactions'];
+    this.location = [...location, 'Records'];
     this.page = page;
     this.index = index;
   }
 
-  public handle = async (): Promise<ReportInputTransaction[]> => {
+  public handle = async (): Promise<ReportInputRecord[]> => {
     try {
       this.prompt.update(this.location, 'Fetching');
       await waitAndClick(
@@ -36,32 +33,32 @@ export class monthExpansionTransactionsHandler {
         `#tblSikum > tbody > tr:nth-child(${this.index}) > td:nth-child(2) > a`
       );
 
-      const transactionsTable = await waitForSelectorPlus(
+      const recordsTable = await waitForSelectorPlus(
         this.page,
         '#ContentUsersPage_dgHeshboniot'
       );
-      const transactions = await this.page.evaluate(
-        getReportExpansionInputTransactions,
-        transactionsTable
+      const records = await this.page.evaluate(
+        getReportExpansionInputRecords,
+        recordsTable
       );
 
       this.prompt.update(this.location, 'Fetching details');
-      for (let i = 0; i < transactions.length; i++) {
-        transactions[i].details = await this.getTransactionDetails(i);
+      for (let i = 0; i < records.length; i++) {
+        records[i].details = await this.getRecordDetails(i);
       }
 
       await waitAndClick(this.page, '#ContentUsersPage_btnGoBack');
       this.prompt.update(this.location, 'Done');
-      return transactions;
+      return records;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
       return [];
     }
   };
 
-  private getTransactionDetails = async (
+  private getRecordDetails = async (
     index: number
-  ): Promise<ReportInputTransactionDetails | undefined> => {
+  ): Promise<ReportInputRecordDetails | undefined> => {
     try {
       await waitAndClick(
         this.page,
@@ -74,7 +71,7 @@ export class monthExpansionTransactionsHandler {
       );
 
       const details = await this.page.evaluate(
-        getReportExpansionInputTransactionDetails,
+        getReportExpansionInputRecordDetails,
         detailsTable
       );
 

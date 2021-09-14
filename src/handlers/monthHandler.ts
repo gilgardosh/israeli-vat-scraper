@@ -12,7 +12,7 @@ import {
   ReportExpansion,
 } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
-import { MonthDealsHandler } from './monthDealsHandler.js';
+import { MonthSalesHandler } from './monthSalesHandler.js';
 import { MonthFixesHandler } from './monthFixesHandler.js';
 import { MonthInputsHandler } from './monthInputsHandler.js';
 
@@ -32,7 +32,7 @@ export class MonthHandler {
   ) {
     this.config = config;
     this.prompt = prompt;
-    this.location = [...location, report.submissionPeriod.substr(0, 2)];
+    this.location = [...location, report.reportMonth.substr(0, 2)];
     this.report = report;
     this.index = index;
   }
@@ -111,8 +111,8 @@ export class MonthHandler {
         this.index
       ).handle();
 
-      // get deals
-      reportExpansion.deals = await new MonthDealsHandler(
+      // get sales
+      reportExpansion.sales = await new MonthSalesHandler(
         this.config,
         this.prompt,
         this.location,

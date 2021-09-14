@@ -1,12 +1,12 @@
 import {
   Report,
-  ReportDeals,
+  ReportSales,
   ReportDetails,
   ReportExpansion,
   ReportFixedInvoice,
   ReportInputs,
-  ReportInputTransaction,
-  ReportInputTransactionDetails,
+  ReportInputRecord,
+  ReportInputRecordDetails,
   ReportRecordCategories,
   ReportRecordColumns,
 } from './types.js';
@@ -21,11 +21,11 @@ export const getReportsTable = (table: HTMLTableElement): Report[] => {
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const rowData: Report = {
-      submissionPeriod: tableRow.cells[0].innerText,
-      type: tableRow.cells[1].innerText,
+      reportMonth: tableRow.cells[0].innerText,
+      reportType: tableRow.cells[1].innerText,
       corectness: tableRow.cells[2].innerText,
-      reportedAmount: getFloat(tableRow.cells[3].innerText),
-      submissionDate: tableRow.cells[4].innerText,
+      totalVat: getFloat(tableRow.cells[3].innerText),
+      generationDate: tableRow.cells[4].innerText,
       route: tableRow.cells[5].innerText,
       isFixed: tableRow.cells[6].innerText.includes('ת'),
     };
@@ -46,18 +46,18 @@ export const getReportDetails = (table: HTMLTableElement): ReportDetails => {
   };
 
   const details: ReportDetails = {
-    osekNum: getInnerData(0),
+    licensedDealerId: getInnerData(0),
     osekName: getInnerData(1),
     regionalCommissioner: getInnerData(2),
     reportingPeriod: getInnerData(3),
     reportingOrigin: getInnerData(4),
     reportingDate: getInnerData(5),
     reportingStatus: getInnerData(6),
-    taxableTransactions: getInt(getInnerData(7)),
-    taxableTransactionsVat: getInt(getInnerData(8)),
-    exemptTransactions: getInt(getInnerData(9)),
-    equipmentInputs: getInt(getInnerData(10)),
-    otherInputs: getInt(getInnerData(11)),
+    taxableSalesAmount: getInt(getInnerData(7)),
+    taxableSalesVat: getInt(getInnerData(8)),
+    zeroOrExemptSalesCount: getInt(getInnerData(9)),
+    equipmentInputsVat: getInt(getInnerData(10)),
+    otherInputsVat: getInt(getInnerData(11)),
     refundAmount: getInt(getInnerData(12)),
     fileInvoiceRecord: getInnerData(13),
   };
@@ -76,11 +76,11 @@ export const getReportExpansionTitle = (
     reportingPeriod: table.rows[0].cells[1].innerText,
     reportingOrigin: table.rows[0].cells[3].innerText,
     reportingDate: table.rows[0].cells[5].innerText,
-    taxableTransactions: getInt(table.rows[1].cells[1].innerText),
-    taxableTransactionsVat: getInt(table.rows[1].cells[3].innerText),
-    exemptTransactions: getInt(table.rows[1].cells[5].innerText),
-    equipmentInputs: getInt(table.rows[2].cells[1].innerText),
-    otherInputs: getInt(table.rows[2].cells[3].innerText),
+    taxableSalesAmount: getInt(table.rows[1].cells[1].innerText),
+    taxableSalesVat: getInt(table.rows[1].cells[3].innerText),
+    zeroOrExemptSalesCount: getInt(table.rows[1].cells[5].innerText),
+    equipmentInputsVat: getInt(table.rows[2].cells[1].innerText),
+    otherInputsVat: getInt(table.rows[2].cells[3].innerText),
     refundAmount: getInt(table.rows[2].cells[5].innerText),
   };
 
@@ -99,7 +99,7 @@ export const getReportExpansionInputs = (
     };
 
     return {
-      transactionsNum: getInt(row.cells[index].innerText),
+      recordsCount: getInt(row.cells[index].innerText),
       vatAmount: getInt(row.cells[index + 1].innerText),
       beforeVatAmount: getInt(row.cells[index + 2].innerText),
     };
@@ -126,10 +126,10 @@ export const getReportExpansionInputs = (
   return inputsData;
 };
 
-export const getReportExpansionInputTransactions = (
+export const getReportExpansionInputRecords = (
   table: HTMLTableElement
-): ReportInputTransaction[] => {
-  const transactionsData: ReportInputTransaction[] = [];
+): ReportInputRecord[] => {
+  const recordsData: ReportInputRecord[] = [];
 
   const getInt = (raw: string) => {
     return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
@@ -137,8 +137,8 @@ export const getReportExpansionInputTransactions = (
 
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
-    const transaction: ReportInputTransaction = {
-      type: tableRow.cells[0].innerText,
+    const record: ReportInputRecord = {
+      recordType: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
       vatAmount: getInt(tableRow.cells[3].innerText),
@@ -147,21 +147,21 @@ export const getReportExpansionInputTransactions = (
       errorDescription: tableRow.cells[6].innerText,
     };
 
-    transactionsData.push(transaction);
+    recordsData.push(record);
   }
 
-  return transactionsData;
+  return recordsData;
 };
 
-export const getReportExpansionInputTransactionDetails = (
+export const getReportExpansionInputRecordDetails = (
   table: HTMLTableElement
-): ReportInputTransactionDetails => {
+): ReportInputRecordDetails => {
   const getInt = (raw: string) => {
     return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
   };
 
-  const tableData: ReportInputTransactionDetails = {
-    type: table.rows[0].cells[1].innerText,
+  const tableData: ReportInputRecordDetails = {
+    recordType: table.rows[0].cells[1].innerText,
     invoiceNum: table.rows[1].cells[1].innerText,
     referenceGroup: table.rows[2].cells[1].innerText,
     invoiceDate: table.rows[3].cells[1].innerText,
@@ -173,9 +173,9 @@ export const getReportExpansionInputTransactionDetails = (
   return tableData;
 };
 
-export const getReportExpansionDeals = (
+export const getReportExpansionSales = (
   table: HTMLTableElement
-): ReportDeals => {
+): ReportSales => {
   const getCategoryData = (
     row: HTMLTableRowElement,
     index: number
@@ -185,7 +185,7 @@ export const getReportExpansionDeals = (
     };
 
     return {
-      transactionsNum: getInt(row.cells[index].innerText),
+      recordsCount: getInt(row.cells[index].innerText),
       vatAmount: getInt(row.cells[index + 1].innerText),
       beforeVatAmount: getInt(row.cells[index + 2].innerText),
     };
@@ -199,12 +199,12 @@ export const getReportExpansionDeals = (
     };
   };
 
-  const inputsData: ReportDeals = {
-    regularDealRecognized: getRowData(table.rows[2]),
-    zeroDealRecognized: getRowData(table.rows[3]),
-    regularDealUnrecognized: getRowData(table.rows[4]),
-    zeroDealUnrecognized: getRowData(table.rows[5]),
-    selfInvoiceDeal: getRowData(table.rows[6]),
+  const inputsData: ReportSales = {
+    regularSaleRecognized: getRowData(table.rows[2]),
+    zeroSaleRecognized: getRowData(table.rows[3]),
+    regularSaleUnrecognized: getRowData(table.rows[4]),
+    zeroSaleUnrecognized: getRowData(table.rows[5]),
+    selfInvoiceSale: getRowData(table.rows[6]),
     listExport: getRowData(table.rows[7]),
     servicesExport: getRowData(table.rows[8]),
     rashapClient: getRowData(table.rows[9]),
@@ -226,7 +226,7 @@ export const getReportExpansionFixes = (
   for (let i = 1; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const fix: ReportFixedInvoice = {
-      type: tableRow.cells[0].innerText,
+      saleType: tableRow.cells[0].innerText,
       referenceNum: tableRow.cells[1].innerText,
       invoiceDate: tableRow.cells[2].innerText,
       invoiceAmount: getInt(tableRow.cells[3].innerText),

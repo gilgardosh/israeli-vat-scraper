@@ -42,9 +42,7 @@ export class YearHandler {
           .filter(
             (item) =>
               !this.months ||
-              this.months.includes(
-                parseInt(item[0].submissionPeriod.substr(0, 2))
-              )
+              this.months.includes(parseInt(item[0].reportMonth.substr(0, 2)))
           )
           .map(async (item) => {
             const monthHandler = new MonthHandler(

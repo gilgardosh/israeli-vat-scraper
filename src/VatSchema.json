@@ -6,38 +6,41 @@
     "additionalProperties": false,
     "description": "VAT data object",
     "required": [
-      "submissionPeriod",
-      "type",
+      "reportMonth",
+      "reportType",
       "corectness",
-      "reportedAmount",
-      "submissionDate",
+      "totalVat",
+      "generationDate",
       "route",
       "isFixed"
     ],
     "properties": {
-      "submissionPeriod": {
+      "reportMonth": {
         "type": "string",
         "description": "תקופת הדיווח"
       },
-      "type": {
+      "reportType": {
         "type": "string",
-        "description": "סוג הדוח"
+        "description": "סוג הדוח",
+        "enum": ["דוח להחזר", "דוח לתשלום"]
       },
       "corectness": {
         "type": "string",
-        "description": "תקינות"
+        "description": "תקינות",
+        "enum": ["נתקבל"]
       },
-      "reportedAmount": {
+      "totalVat": {
         "type": "integer",
         "description": "סכום מדווח"
       },
-      "submissionDate": {
+      "generationDate": {
         "type": "string",
         "description": "תאריך הגשה"
       },
       "route": {
         "type": "string",
-        "description": "מסלול"
+        "description": "מסלול",
+        "enum": ["שידור", "שידור - מייצג"]
       },
       "isFixed": {
         "type": "boolean",
@@ -48,23 +51,23 @@
         "additionalProperties": false,
         "description": "פרטים נוספים",
         "required": [
-          "osekNum",
+          "licensedDealerId",
           "osekName",
           "regionalCommissioner",
           "reportingPeriod",
           "reportingOrigin",
           "reportingDate",
           "reportingStatus",
-          "taxableTransactions",
-          "taxableTransactionsVat",
-          "exemptTransactions",
-          "equipmentInputs",
-          "otherInputs",
+          "taxableSalesAmount",
+          "taxableSalesVat",
+          "zeroOrExemptSalesCount",
+          "equipmentInputsVat",
+          "otherInputsVat",
           "refundAmount",
           "fileInvoiceRecord"
         ],
         "properties": {
-          "osekNum": {
+          "licensedDealerId": {
             "type": "string",
             "description": "מספר עוסק"
           },
@@ -92,23 +95,23 @@
             "type": "string",
             "description": "מצב הדווח"
           },
-          "taxableTransactions": {
+          "taxableSalesAmount": {
             "type": "integer",
             "description": "עסקאות חייבות"
           },
-          "taxableTransactionsVat": {
+          "taxableSalesVat": {
             "type": "integer",
             "description": "מעמ עסקאות חייבות"
           },
-          "exemptTransactions": {
+          "zeroOrExemptSalesCount": {
             "type": "integer",
             "description": "עסקאות פטורות / אפס"
           },
-          "equipmentInputs": {
+          "equipmentInputsVat": {
             "type": "integer",
             "description": "תשומות ציוד"
           },
-          "otherInputs": {
+          "otherInputsVat": {
             "type": "integer",
             "description": "תשומות אחרות"
           },
@@ -130,11 +133,11 @@
           "reportingPeriod",
           "reportingOrigin",
           "reportingDate",
-          "taxableTransactions",
-          "taxableTransactionsVat",
-          "exemptTransactions",
-          "equipmentInputs",
-          "otherInputs",
+          "taxableSalesAmount",
+          "taxableSalesVat",
+          "zeroOrExemptSalesCount",
+          "equipmentInputsVat",
+          "otherInputsVat",
           "refundAmount"
         ],
         "properties": {
@@ -150,23 +153,23 @@
             "type": "string",
             "description": "תאריך הדווח"
           },
-          "taxableTransactions": {
+          "taxableSalesAmount": {
             "type": "integer",
             "description": "עסקאות חייבות"
           },
-          "taxableTransactionsVat": {
+          "taxableSalesVat": {
             "type": "integer",
             "description": "מעמ עסקאות חייבות"
           },
-          "exemptTransactions": {
+          "zeroOrExemptSalesCount": {
             "type": "integer",
             "description": "עסקאות פטורות / אפס"
           },
-          "equipmentInputs": {
+          "equipmentInputsVat": {
             "type": "integer",
             "description": "תשומות ציוד"
           },
-          "otherInputs": {
+          "otherInputsVat": {
             "type": "integer",
             "description": "תשומות אחרות"
           },
@@ -232,47 +235,47 @@
               }
             }
           },
-          "deals": {
+          "sales": {
             "type": "object",
             "additionalProperties": false,
             "description": "עסקאות",
             "required": [
-              "regularDealRecognized",
-              "zeroDealRecognized",
-              "regularDealUnrecognized",
-              "zeroDealUnrecognized",
-              "selfInvoiceDeal",
+              "regularSaleRecognized",
+              "zeroSaleRecognized",
+              "regularSaleUnrecognized",
+              "zeroSaleUnrecognized",
+              "selfInvoiceSale",
               "listExport",
               "servicesExport",
               "rashapClient",
               "total"
             ],
             "properties": {
-              "regularDealRecognized": {
+              "regularSaleRecognized": {
                 "allOf": [
                   { "$ref": "#/definitions/ReportRecordCategories" },
                   { "description": "עסקה רגילה - מזוהה" }
                 ]
               },
-              "zeroDealRecognized": {
+              "zeroSaleRecognized": {
                 "allOf": [
                   { "$ref": "#/definitions/ReportRecordCategories" },
                   { "description": "עסקה אפס - מזוהה" }
                 ]
               },
-              "regularDealUnrecognized": {
+              "regularSaleUnrecognized": {
                 "allOf": [
                   { "$ref": "#/definitions/ReportRecordCategories" },
                   { "description": "עסקה רגילה - לא מזוהה" }
                 ]
               },
-              "zeroDealUnrecognized": {
+              "zeroSaleUnrecognized": {
                 "allOf": [
                   { "$ref": "#/definitions/ReportRecordCategories" },
                   { "description": "עסקה אפס - לא מזוהה" }
                 ]
               },
-              "selfInvoiceDeal": {
+              "selfInvoiceSale": {
                 "allOf": [
                   { "$ref": "#/definitions/ReportRecordCategories" },
                   { "description": "חשבונית עצמית (עסקה)" }
@@ -309,7 +312,7 @@
             "additionalProperties": false,
             "description": "חשבוניות שתוקנו",
             "required": [
-              "type",
+              "saleType",
               "referenceNum",
               "invoiceDate",
               "invoiceAmount",
@@ -318,7 +321,7 @@
               "fixDetails"
             ],
             "properties": {
-              "type": {
+              "saleType": {
                 "type": "string",
                 "description": "סוג"
               },
@@ -381,9 +384,9 @@
     "ReportRecordColumns": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["transactionsNum", "vatAmount", "beforeVatAmount"],
+      "required": ["recordsCount", "vatAmount", "beforeVatAmount"],
       "properties": {
-        "transactionsNum": {
+        "recordsCount": {
           "type": "integer",
           "description": "מס' תנועות"
         },
@@ -395,13 +398,13 @@
           "type": "integer",
           "description": "סכום לפני מעמ"
         },
-        "transactions": {
+        "records": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "type",
+              "recordType",
               "referenceNum",
               "invoiceDate",
               "vatAmount",
@@ -410,7 +413,7 @@
               "errorDescription"
             ],
             "properties": {
-              "type": {
+              "recordType": {
                 "type": "string",
                 "description": "סוג רשומה"
               },
@@ -443,7 +446,7 @@
                 "additionalProperties": false,
                 "description": "פרטים נוספים",
                 "required": [
-                  "type",
+                  "recordType",
                   "invoiceNum",
                   "referenceGroup",
                   "invoiceDate",
@@ -452,7 +455,7 @@
                   "supplierOrList"
                 ],
                 "properties": {
-                  "type": {
+                  "recordType": {
                     "type": "string",
                     "description": "סוג רשומה"
                   },

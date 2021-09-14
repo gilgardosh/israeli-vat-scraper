@@ -2,11 +2,11 @@ export interface Report {
   /**
    * תקופת הדיווח
    */
-  submissionPeriod: string;
+  reportMonth: string;
   /**
    * סוג הדוח
    */
-  type: string;
+  reportType: string;
   /**
    * תקינות
    */
@@ -14,11 +14,11 @@ export interface Report {
   /**
    * סכום מדווח
    */
-  reportedAmount: number;
+  totalVat: number;
   /**
    * תאריך הגשה
    */
-  submissionDate: string;
+  generationDate: string;
   /**
    * מסלול
    */
@@ -41,7 +41,7 @@ export interface ReportDetails {
   /**
    * מספר עוסק
    */
-  osekNum: string;
+  licensedDealerId: string;
   /**
    * שם עוסק	אורי גולדשטיין בע"מ
    */
@@ -69,23 +69,23 @@ export interface ReportDetails {
   /**
    * עסקאות חייבות
    */
-  taxableTransactions: number;
+  taxableSalesAmount: number;
   /**
    * מע"מ עסקאות חייבות
    */
-  taxableTransactionsVat: number;
+  taxableSalesVat: number;
   /**
    * עסקאות פטורות / אפס
    */
-  exemptTransactions: number;
+  zeroOrExemptSalesCount: number;
   /**
    * תשומות ציוד
    */
-  equipmentInputs: number;
+  equipmentInputsVat: number;
   /**
    * תשומות אחרות
    */
-  otherInputs: number;
+  otherInputsVat: number;
   /**
    * סכום להחזר
    */
@@ -112,23 +112,23 @@ export interface ReportExpansion {
   /**
    * עסקאות חייבות
    */
-  taxableTransactions: number;
+  taxableSalesAmount: number;
   /**
    * מע"מ עסקאות חייבות
    */
-  taxableTransactionsVat: number;
+  taxableSalesVat: number;
   /**
    * עסקאות פטורות / אפס
    */
-  exemptTransactions: number;
+  zeroOrExemptSalesCount: number;
   /**
    * תשומות ציוד
    */
-  equipmentInputs: number;
+  equipmentInputsVat: number;
   /**
    * תשומות אחרות
    */
-  otherInputs: number;
+  otherInputsVat: number;
   /**
    * סכום להחזר
    */
@@ -140,7 +140,7 @@ export interface ReportExpansion {
   /**
    * עסקאות
    */
-  deals?: ReportDeals;
+  sales?: ReportSales;
   /**
    * חשבוניות שתוקנו
    */
@@ -178,27 +178,27 @@ export interface ReportInputs {
   total: ReportRecordCategories;
 }
 
-export interface ReportDeals {
+export interface ReportSales {
   /**
    * עסקה רגילה - מזוהה
    */
-  regularDealRecognized: ReportRecordCategories;
+  regularSaleRecognized: ReportRecordCategories;
   /**
    * עסקה אפס - מזוהה
    */
-  zeroDealRecognized: ReportRecordCategories;
+  zeroSaleRecognized: ReportRecordCategories;
   /**
    * עסקה רגילה - לא מזוהה
    */
-  regularDealUnrecognized: ReportRecordCategories;
+  regularSaleUnrecognized: ReportRecordCategories;
   /**
    * עסקה אפס - לא מזוהה
    */
-  zeroDealUnrecognized: ReportRecordCategories;
+  zeroSaleUnrecognized: ReportRecordCategories;
   /**
    * חשבונית עצמית (עסקה)
    */
-  selfInvoiceDeal: ReportRecordCategories;
+  selfInvoiceSale: ReportRecordCategories;
   /**
    * רשימון יצוא
    */
@@ -236,7 +236,7 @@ export interface ReportRecordColumns {
   /**
    * מס' תנועות
    */
-  transactionsNum: number;
+  recordsCount: number;
   /**
    * סכום מע"מ
    */
@@ -245,14 +245,14 @@ export interface ReportRecordColumns {
    * סכום לפני מע"מ
    */
   beforeVatAmount: number;
-  transactions?: ReportInputTransaction[];
+  records?: ReportInputRecord[];
 }
 
-export interface ReportInputTransaction {
+export interface ReportInputRecord {
   /**
    * סוג רשומה
    */
-  type: string;
+  recordType: string;
   /**
    * מספר אסמכתא
    */
@@ -280,14 +280,14 @@ export interface ReportInputTransaction {
   /**
    * פרטים נוספים
    */
-  details?: ReportInputTransactionDetails;
+  details?: ReportInputRecordDetails;
 }
 
-export interface ReportInputTransactionDetails {
+export interface ReportInputRecordDetails {
   /**
    * סוג רשומה
    */
-  type: string;
+  recordType: string;
   /**
    * מספר חשבונית
    */
@@ -318,7 +318,7 @@ export interface ReportFixedInvoice {
   /**
    * סוג
    */
-  type: string;
+  saleType: string;
   /**
    * מס' אסמכתא
    */

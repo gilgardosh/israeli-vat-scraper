@@ -3,7 +3,7 @@ import { getReportExpansionInputs } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportInputs } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
-import { monthExpansionTransactionsHandler } from './monthExpansionTransactionsHandler.js';
+import { monthExpansionRecordsHandler } from './monthExpansionRecordsHandler.js';
 
 export class MonthInputsHandler {
   private config: Config;
@@ -40,14 +40,12 @@ export class MonthInputsHandler {
         inputsTable
       );
 
-      // gt income transactions
+      // gt income records
       for (const key in inputsData) {
         if (key === 'total') {
           continue;
         }
-        if (
-          inputsData[key as keyof ReportInputs].received.transactionsNum > 0
-        ) {
+        if (inputsData[key as keyof ReportInputs].received.recordsCount > 0) {
           const index = ((): number | null => {
             switch (key) {
               case 'regularInput':
@@ -68,14 +66,14 @@ export class MonthInputsHandler {
           })();
 
           if (index) {
-            const transactionsHandler = new monthExpansionTransactionsHandler(
+            const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
               page,
               index
             );
-            inputsData[key as keyof ReportInputs].received.transactions =
-              await transactionsHandler.handle();
+            inputsData[key as keyof ReportInputs].received.records =
+              await recordsHandler.handle();
             [];
           }
         }
