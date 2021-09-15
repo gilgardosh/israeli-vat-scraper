@@ -7,9 +7,11 @@ export const parseDate = (rawDate: string): Date => {
       case 3:
         return new Date(dateParts[2], dateParts[1], dateParts[0]);
       default:
-        throw new Error();
+        throw new Error(`Unable to parse "${rawDate} into date"`);
     }
   } catch (e) {
-    throw new Error(`Error parsing date: cannot parse ${e}`);
+    throw new Error(
+      `Error parsing date: cannot parse ${(e as Error)?.message || e}`
+    );
   }
 };

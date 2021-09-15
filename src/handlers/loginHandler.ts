@@ -48,6 +48,6 @@ export const login = async (page: Page): Promise<void> => {
 
     return;
   } catch (e) {
-    throw new Error(`login - ${e}`);
+    throw new Error(`login - ${(e as Error)?.message || e}`);
   }
 };

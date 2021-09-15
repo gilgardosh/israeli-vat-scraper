@@ -37,6 +37,7 @@ export const waitAndClick = async (
     return;
   }
   await button.click();
+  return;
 };
 
 export const waitForSelectorPlus = async (
@@ -49,7 +50,7 @@ export const waitForSelectorPlus = async (
       return element;
     })
     .catch(async () => {
-      console.log(`Activating safety net for selector ${selector}`);
+      console.debug(`Activating safety net for selector ${selector}`);
       await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
       return await page.waitForSelector(selector);
     });
