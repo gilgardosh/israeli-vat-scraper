@@ -1,3 +1,4 @@
+import { Page } from 'puppeteer';
 import { newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionInputs } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
@@ -10,6 +11,7 @@ export class MonthInputsHandler {
   private prompt: UserPrompt;
   private location: string[];
   private index: number;
+  private page: Page | null = null;
 
   constructor(
     config: Config,
@@ -26,16 +28,16 @@ export class MonthInputsHandler {
   public handle = async (): Promise<ReportInputs | undefined> => {
     this.prompt.update(this.location, 'Fetching...');
     try {
-      const page = await newPageByMonth(
+      this.page = await newPageByMonth(
         this.config.visibleBrowser,
         this.location[0],
         this.index
       );
 
-      await waitAndClick(page, '#ContentUsersPage_TabMenu1_LinkButton0');
+      await waitAndClick(this.page, '#ContentUsersPage_TabMenu1_LinkButton0');
 
-      const inputsTable = await waitForSelectorPlus(page, '#tblSikum');
-      const inputsData = await page.evaluate(
+      const inputsTable = await waitForSelectorPlus(this.page, '#tblSikum');
+      const inputsData = await this.page.evaluate(
         getReportExpansionInputs,
         inputsTable
       );
@@ -69,7 +71,7 @@ export class MonthInputsHandler {
             const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
-              page,
+              this.page,
               index
             );
             inputsData[key as keyof ReportInputs].received.records =
@@ -79,10 +81,12 @@ export class MonthInputsHandler {
         }
       }
 
+      this.page.browser().close();
       this.prompt.update(this.location, 'Done');
       return inputsData;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
+      this.page?.browser().close();
       return;
     }
   };

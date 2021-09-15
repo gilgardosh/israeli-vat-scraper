@@ -1,3 +1,4 @@
+import { Page } from 'puppeteer';
 import { newHomePage } from '../utils/browserUtil.js';
 import { parseDate } from '../utils/dates.js';
 import { getSelectOptions, waitForSelectorPlus } from '../utils/pageUtil.js';
@@ -6,10 +7,11 @@ import { UserPrompt } from '../utils/userPrompt.js';
 import { YearHandler } from './yearHandler.js';
 
 export const homePageHandler = async (config: Config): Promise<Report[]> => {
+  let page: Page | null = null;
   try {
     const prompt = new UserPrompt();
 
-    const page = await newHomePage(config.visibleBrowser);
+    page = await newHomePage(config.visibleBrowser);
     console.log('Logged in');
 
     await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
@@ -17,8 +19,6 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       page,
       'select#ContentUsersPage_DdlTkufa > option'
     );
-
-    await page.browser().close();
 
     const reports: Report[] = [];
 
@@ -33,16 +33,26 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       });
     }
 
+    let pageReuseFlag = false;
+
     await Promise.all(
       taxYears.map(async (year) => {
         const numYear = parseInt(year.value);
         if (!years || years[numYear]) {
           const months = years[numYear]?.length ? years[numYear] : null;
+
+          let pageReuse = undefined;
+          if (!pageReuseFlag && page) {
+            pageReuseFlag = true;
+            pageReuse = page;
+          }
+
           const reportsYearHandler = new YearHandler(
             config,
             prompt,
             [year.value],
-            months
+            months,
+            pageReuse
           );
           return await reportsYearHandler.handle();
         }
@@ -53,6 +63,8 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
         reports.push(...list);
       });
     });
+
+    page.browser().close();
 
     reports.sort(
       (a, b) =>
@@ -67,6 +79,7 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
 
     return reports;
   } catch (e) {
-    throw new Error(`reportsHandler - ${e}`);
+    page?.browser().close();
+    throw new Error(`reportsHandler - ${(e as Error)?.message || e}`);
   }
 };

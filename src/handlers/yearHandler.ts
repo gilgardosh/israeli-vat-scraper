@@ -1,4 +1,5 @@
-import { newPageByYear } from '../utils/browserUtil.js';
+import { Page } from 'puppeteer';
+import { navigateHomeToYear, newPageByYear } from '../utils/browserUtil.js';
 import { getReportsTable } from '../utils/evaluationFunctions.js';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, Report } from '../utils/types.js';
@@ -10,17 +11,20 @@ export class YearHandler {
   private prompt: UserPrompt;
   private location: string[];
   private months: number[] | null = null;
+  private page: Page | null = null;
 
   constructor(
     config: Config,
     prompt: UserPrompt,
     location: string[],
-    months: number[] | null = null
+    months: number[] | null = null,
+    page?: Page
   ) {
     this.config = config;
     this.prompt = prompt;
     this.location = location;
     this.months = months;
+    this.page = page || null;
   }
 
   public handle = async (): Promise<Report[]> => {
@@ -36,6 +40,8 @@ export class YearHandler {
 
       const reports: Report[] = [];
 
+      let pageReuseFlag = false;
+
       await Promise.all(
         baseYearTable
           .map((report: Report, i: number): [Report, number] => [report, i])
@@ -45,12 +51,19 @@ export class YearHandler {
               this.months.includes(parseInt(item[0].reportMonth.substr(0, 2)))
           )
           .map(async (item) => {
+            let pageReuse = undefined;
+            if (!pageReuseFlag && this.page) {
+              pageReuseFlag = true;
+              pageReuse = this.page;
+            }
+
             const monthHandler = new MonthHandler(
               this.config,
               this.prompt,
               this.location,
               item[0],
-              item[1]
+              item[1],
+              pageReuse
             );
 
             const report = (await monthHandler.handle()) || item[0];
@@ -72,29 +85,32 @@ export class YearHandler {
 
   private getReportTable = async (): Promise<Report[]> => {
     try {
-      const page = await newPageByYear(
-        this.config.visibleBrowser,
-        this.location[0]
-      );
+      if (this.page) {
+        await navigateHomeToYear(this.page, this.location[0]);
+      } else {
+        this.page = await newPageByYear(
+          this.config.visibleBrowser,
+          this.location[0]
+        );
+      }
 
-      await waitForSelectorPlus(page, '#ContentUsersPage_TblDuhot');
+      await waitForSelectorPlus(this.page, '#ContentUsersPage_TblDuhot');
 
-      const tableElement = await page.$('#dgDuchot');
+      const tableElement = await this.page.$('#dgDuchot');
 
       if (!tableElement) {
         return [];
       }
 
-      const table: Report[] = await page.evaluate(
+      const table: Report[] = await this.page.evaluate(
         getReportsTable,
         tableElement
       );
 
-      await page.browser().close();
-
       return table;
     } catch (e) {
-      throw new Error(`getReportsTable - ${e}`);
+      this.page?.browser().close();
+      throw new Error(`getReportsTable - ${(e as Error)?.message || e}`);
     }
   };
 }

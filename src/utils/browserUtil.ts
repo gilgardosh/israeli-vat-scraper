@@ -2,6 +2,23 @@ import puppeteer, { Page } from 'puppeteer';
 import { login } from '../handlers/loginHandler.js';
 import { waitAndClick, waitForSelectorPlus } from './pageUtil.js';
 
+const nevigateYearToMonth = async (
+  page: Page,
+  monthIndex: number
+): Promise<void> => {
+  try {
+    const selector = `#dgDuchot > tbody > tr:nth-child(${
+      monthIndex + 2
+    }) > td:nth-child(1) > a`;
+
+    await waitAndClick(page, selector);
+
+    return;
+  } catch (e) {
+    throw new Error(`nevigateYearToMonth - ${(e as Error)?.message}`);
+  }
+};
+
 export const newPageByMonth = async (
   showBrowser: boolean,
   year: string,
@@ -10,14 +27,26 @@ export const newPageByMonth = async (
   try {
     const page = await newPageByYear(showBrowser, year);
 
-    const selector = `#dgDuchot > tbody > tr:nth-child(${
-      monthIndex + 2
-    }) > td:nth-child(1) > a`;
-    await waitAndClick(page, selector);
+    await nevigateYearToMonth(page, monthIndex);
 
     return page;
   } catch (e) {
-    throw new Error(`newPageByYear - ${e}`);
+    throw new Error(`newPageByYear - ${(e as Error)?.message}`);
+  }
+};
+
+export const navigateHomeToYear = async (
+  page: Page,
+  year: string
+): Promise<void> => {
+  try {
+    await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
+
+    await page.select('#ContentUsersPage_DdlTkufa', year);
+
+    return;
+  } catch (e) {
+    throw new Error(`navigateHomeToYear - ${(e as Error)?.message}`);
   }
 };
 
@@ -28,12 +57,11 @@ export const newPageByYear = async (
   try {
     const page = await newHomePage(showBrowser);
 
-    await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
-    await page.select('#ContentUsersPage_DdlTkufa', year);
+    await navigateHomeToYear(page, year);
 
     return page;
   } catch (e) {
-    throw new Error(`newPageByYear - ${e}`);
+    throw new Error(`newPageByYear - ${(e as Error)?.message}`);
   }
 };
 
@@ -55,6 +83,6 @@ export const newHomePage = async (showBrowser: boolean): Promise<Page> => {
 
     return page;
   } catch (e) {
-    throw new Error(`newHomePage - ${e}`);
+    throw new Error(`newHomePage - ${(e as Error)?.message}`);
   }
 };

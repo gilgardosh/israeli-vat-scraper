@@ -1,3 +1,4 @@
+import { Page } from 'puppeteer';
 import { newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionSales } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
@@ -10,6 +11,7 @@ export class MonthSalesHandler {
   private prompt: UserPrompt;
   private location: string[];
   private index: number;
+  private page: Page | null = null;
 
   constructor(
     config: Config,
@@ -26,16 +28,16 @@ export class MonthSalesHandler {
   public handle = async (): Promise<ReportSales | undefined> => {
     this.prompt.update(this.location, 'Fetching...');
     try {
-      const page = await newPageByMonth(
+      this.page = await newPageByMonth(
         this.config.visibleBrowser,
         this.location[0],
         this.index
       );
 
-      await waitAndClick(page, '#ContentUsersPage_TabMenu1_LinkButton1');
+      await waitAndClick(this.page, '#ContentUsersPage_TabMenu1_LinkButton1');
 
-      const salesTable = await waitForSelectorPlus(page, '#tblSikum');
-      const salesData = await page.evaluate(
+      const salesTable = await waitForSelectorPlus(this.page, '#tblSikum');
+      const salesData = await this.page.evaluate(
         getReportExpansionSales,
         salesTable
       );
@@ -73,7 +75,7 @@ export class MonthSalesHandler {
             const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
-              page,
+              this.page,
               index
             );
             salesData[key as keyof ReportSales].received.records =
@@ -83,10 +85,12 @@ export class MonthSalesHandler {
         }
       }
 
+      this.page.browser().close();
       this.prompt.update(this.location, 'Done');
       return salesData;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
+      this.page?.browser().close();
       return;
     }
   };

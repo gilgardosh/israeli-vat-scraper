@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newPageByYear } from '../utils/browserUtil.js';
+import { newPageByMonth, newPageByYear } from '../utils/browserUtil.js';
 import {
   getReportDetails,
   getReportExpansionTitle,
@@ -22,36 +22,47 @@ export class MonthHandler {
   private location: string[];
   private report: Report;
   private index: number;
+  private page: Page | null = null;
 
   constructor(
     config: Config,
     prompt: UserPrompt,
     location: string[],
     report: Report,
-    index: number
+    index: number,
+    page?: Page
   ) {
     this.config = config;
     this.prompt = prompt;
     this.location = [...location, report.reportMonth.substr(0, 2)];
     this.report = report;
     this.index = index;
+    this.page = page || null;
   }
 
   public handle = async (): Promise<Report | undefined> => {
     try {
-      // get report details
       this.prompt.update(this.location, 'Fetching details');
-      this.report.additionalDetails =
-        await this.getReportAdditionalDetails().catch((e: Error) => {
-          this.prompt.addError(this.location, e.message);
-          return undefined;
-        });
 
-      // get report expansion
-      if (this.config.expandData) {
-        this.prompt.update(this.location, 'Fetching expanded data');
-        this.report.reportExpansion = await this.getExpansions();
-      }
+      const additionalDetailsPromise = this.getReportAdditionalDetails().catch(
+        (e: Error) => {
+          this.prompt.addError(this.location, e.message);
+          this.page?.browser().close();
+          return undefined;
+        }
+      );
+
+      const reportExpansionPromise = this.config.expandData
+        ? this.getExpansions()
+        : undefined;
+
+      await Promise.all([
+        additionalDetailsPromise,
+        reportExpansionPromise,
+      ]).then((res) => {
+        this.report.additionalDetails = res[0];
+        this.report.reportExpansion = res[1];
+      });
 
       this.prompt.update(this.location, 'Done');
       return this.report;
@@ -62,29 +73,29 @@ export class MonthHandler {
   };
 
   private getReportAdditionalDetails = async (): Promise<ReportDetails> => {
-    const page = await newPageByYear(
-      this.config.visibleBrowser,
-      this.location[0]
-    );
+    if (!this.page) {
+      this.page = await newPageByYear(
+        this.config.visibleBrowser,
+        this.location[0]
+      );
+    }
 
     const selector = `#dgDuchot > tbody > tr:nth-child(${
       this.index + 2
     }) > td:nth-child(7) > table > tbody > tr > td:nth-child(1) > input`;
-    await waitAndClick(page, selector);
+    await waitAndClick(this.page, selector);
 
     const detailsTable = await waitForSelectorPlus(
-      page,
+      this.page,
       '#ContentUsersPage_ucPratimNosafimDuchot1_TblPerutDoch'
     );
 
-    const additionalDetails: ReportDetails = await page.evaluate(
+    const additionalDetails: ReportDetails = await this.page.evaluate(
       getReportDetails,
       detailsTable
     );
 
-    // await waitAndClick(page, '#BtnCloseDlgPrtNsf');
-
-    await page.browser().close();
+    this.page.browser().close();
 
     return additionalDetails;
   };
@@ -93,43 +104,58 @@ export class MonthHandler {
     try {
       this.prompt.update(this.location, 'Fetching expansion');
 
-      const page = await newPageByYear(
+      const page = await newPageByMonth(
         this.config.visibleBrowser,
-        this.location[0]
+        this.location[0],
+        this.index
       );
 
-      const reportExpansion = await this.getReportExpansion(page);
+      const expansionCorePromise = this.getReportExpansion(page);
+
+      const inputsPromise = new MonthInputsHandler(
+        this.config,
+        this.prompt,
+        this.location,
+        this.index
+      ).handle();
+
+      const salesPromise = new MonthSalesHandler(
+        this.config,
+        this.prompt,
+        this.location,
+        this.index
+      ).handle();
+
+      const fixedInvoicesPromise = new MonthFixesHandler(
+        this.config,
+        this.prompt,
+        this.location,
+        this.index,
+        page
+      ).handle();
+
+      const reportExpansion: ReportExpansion | undefined = await Promise.all([
+        expansionCorePromise,
+        inputsPromise,
+        salesPromise,
+        fixedInvoicesPromise,
+      ]).then((res) => {
+        if (!res[0]) {
+          return undefined;
+        }
+        return {
+          ...res[0],
+          inputs: res[1],
+          sales: res[2],
+          fixedInvoices: res[3],
+        };
+      });
+
+      page.browser().close();
+
       if (!reportExpansion) {
         return;
       }
-
-      // get inputs
-      reportExpansion.inputs = await new MonthInputsHandler(
-        this.config,
-        this.prompt,
-        this.location,
-        this.index
-      ).handle();
-
-      // get sales
-      reportExpansion.sales = await new MonthSalesHandler(
-        this.config,
-        this.prompt,
-        this.location,
-        this.index
-      ).handle();
-
-      // get fixes
-      reportExpansion.fixedInvoices = await new MonthFixesHandler(
-        this.config,
-        this.prompt,
-        this.location,
-        this.index
-      ).handle();
-
-      // await waitAndClick(page, '#ContentUsersPage_btnGoBack');
-
-      await page.browser().close();
 
       return reportExpansion;
     } catch (e) {
@@ -146,11 +172,6 @@ export class MonthHandler {
   ): Promise<ReportExpansion | undefined> => {
     const location = [...this.location, 'Title'];
     try {
-      const selector = `#dgDuchot > tbody > tr:nth-child(${
-        this.index + 2
-      }) > td:nth-child(1) > a`;
-      await waitAndClick(page, selector);
-
       // get title
       this.prompt.update(location, 'Fetching title...');
       await waitForSelectorPlus(page, '#shaamcontent');

@@ -1,4 +1,4 @@
-import { newPageByMonth } from '../utils/browserUtil.js';
+import { Page } from 'puppeteer';
 import { getReportExpansionFixes } from '../utils/evaluationFunctions.js';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportFixedInvoice } from '../utils/types.js';
@@ -9,29 +9,26 @@ export class MonthFixesHandler {
   private prompt: UserPrompt;
   private location: string[];
   private index: number;
+  private page: Page;
 
   constructor(
     config: Config,
     prompt: UserPrompt,
     location: string[],
-    index: number
+    index: number,
+    page: Page
   ) {
     this.config = config;
     this.prompt = prompt;
     this.location = [...location, 'Fixes'];
     this.index = index;
+    this.page = page;
   }
 
   public handle = async (): Promise<ReportFixedInvoice[] | undefined> => {
     this.prompt.update(this.location, 'Fetching...');
     try {
-      const page = await newPageByMonth(
-        this.config.visibleBrowser,
-        this.location[0],
-        this.index
-      );
-
-      const button = await page
+      const button = await this.page
         .waitForSelector('#ContentUsersPage_lnkHeshboniotBeforeTikun')
         .catch(() => {
           return;
@@ -46,17 +43,21 @@ export class MonthFixesHandler {
 
       // get fixes
       const fixesTable = await waitForSelectorPlus(
-        page,
+        this.page,
         '#ContentUsersPage_DgIskNosfu'
       );
-      const fixes = await page.evaluate(getReportExpansionFixes, fixesTable);
+      const fixes = await this.page.evaluate(
+        getReportExpansionFixes,
+        fixesTable
+      );
 
-      await page.browser().close();
+      this.page.browser().close();
 
       this.prompt.update(this.location, 'Done');
       return fixes;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
+      this.page?.browser().close();
       return;
     }
   };
