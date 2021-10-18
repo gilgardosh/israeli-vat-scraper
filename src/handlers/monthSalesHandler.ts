@@ -70,15 +70,56 @@ export class MonthSalesHandler {
                 return null;
             }
           })();
+          const secondaryIndex = 2;
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
               this.page,
-              index
+              index,
+              secondaryIndex
             );
             salesData[key as keyof ReportSales].received.records =
+              await recordsHandler.handle();
+            [];
+          }
+        }
+
+        if (salesData[key as keyof ReportSales].incorrect.recordsCount > 0) {
+          const index = ((): number | null => {
+            switch (key) {
+              case 'regularSaleRecognized':
+                return 3;
+              case 'zeroSaleRecognized':
+                return 4;
+              case 'regularSaleUnrecognized':
+                return 5;
+              case 'zeroSaleUnrecognized':
+                return 6;
+              case 'selfInvoiceSale':
+                return 7;
+              case 'listExport':
+                return 8;
+              case 'servicesExport':
+                return 9;
+              case 'rashapClient':
+                return 10;
+              default:
+                return null;
+            }
+          })();
+          const secondaryIndex = 5;
+
+          if (index) {
+            const recordsHandler = new monthExpansionRecordsHandler(
+              this.prompt,
+              this.location,
+              this.page,
+              index,
+              secondaryIndex
+            );
+            salesData[key as keyof ReportSales].incorrect.records =
               await recordsHandler.handle();
             [];
           }

@@ -66,15 +66,52 @@ export class MonthInputsHandler {
                 return null;
             }
           })();
+          const secondaryIndex = 2;
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
               this.prompt,
               this.location,
               this.page,
-              index
+              index,
+              secondaryIndex
             );
             inputsData[key as keyof ReportInputs].received.records =
+              await recordsHandler.handle();
+            [];
+          }
+        }
+
+        if (inputsData[key as keyof ReportInputs].incorrect.recordsCount > 0) {
+          const index = ((): number | null => {
+            switch (key) {
+              case 'regularInput':
+                return 3;
+              case 'pettyCash':
+                return 4;
+              case 'selfInvoiceInput':
+                return 5;
+              case 'importList':
+                return 6;
+              case 'rashapSupplier':
+                return 7;
+              case 'otherDocument':
+                return 8;
+              default:
+                return null;
+            }
+          })();
+          const secondaryIndex = 5;
+
+          if (index) {
+            const recordsHandler = new monthExpansionRecordsHandler(
+              this.prompt,
+              this.location,
+              this.page,
+              index,
+              secondaryIndex
+            );
+            inputsData[key as keyof ReportInputs].incorrect.records =
               await recordsHandler.handle();
             [];
           }

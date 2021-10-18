@@ -12,17 +12,20 @@ export class monthExpansionRecordsHandler {
   private location: string[];
   private page: Page;
   private index: number;
+  private secondaryIndex: number;
 
   constructor(
     prompt: UserPrompt,
     location: string[],
     page: Page,
-    index: number
+    index: number,
+    secondaryIndex: number
   ) {
     this.prompt = prompt;
     this.location = [...location, 'Records'];
     this.page = page;
     this.index = index;
+    this.secondaryIndex = secondaryIndex;
   }
 
   public handle = async (): Promise<ReportInputRecord[]> => {
@@ -30,7 +33,7 @@ export class monthExpansionRecordsHandler {
       this.prompt.update(this.location, 'Fetching');
       await waitAndClick(
         this.page,
-        `#tblSikum > tbody > tr:nth-child(${this.index}) > td:nth-child(2) > a`
+        `#tblSikum > tbody > tr:nth-child(${this.index}) > td:nth-child(${this.secondaryIndex}) > a`
       );
 
       const recordsTable = await waitForSelectorPlus(
