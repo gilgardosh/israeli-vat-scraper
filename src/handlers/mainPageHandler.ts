@@ -33,26 +33,17 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       });
     }
 
-    let pageReuseFlag = false;
-
     await Promise.all(
       taxYears.map(async (year) => {
         const numYear = parseInt(year.value);
         if (!years || years[numYear]) {
           const months = years[numYear]?.length ? years[numYear] : null;
 
-          let pageReuse = undefined;
-          if (!pageReuseFlag && page) {
-            pageReuseFlag = true;
-            pageReuse = page;
-          }
-
           const reportsYearHandler = new YearHandler(
             config,
             prompt,
             [year.value],
-            months,
-            pageReuse
+            months
           );
           return await reportsYearHandler.handle();
         }
