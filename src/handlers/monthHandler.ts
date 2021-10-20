@@ -130,8 +130,7 @@ export class MonthHandler {
         this.config,
         this.prompt,
         this.location,
-        this.index,
-        page
+        this.index
       ).handle();
 
       const reportExpansion: ReportExpansion | undefined = await Promise.all([
