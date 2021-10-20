@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newPageByMonth } from '../utils/browserUtil.js';
+import { freePage, newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionInputs } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportInputs } from '../utils/types.js';
@@ -43,6 +43,8 @@ export class MonthInputsHandler {
         getReportExpansionInputs,
         inputsTable
       );
+
+      this.freePage();
 
       // gt income records
       for (const key in inputsData) {
@@ -122,13 +124,20 @@ export class MonthInputsHandler {
         }
       }
 
-      this.page.browser().close();
       this.prompt.update(this.location, 'Done');
       return inputsData;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
-      this.page?.browser().close();
+      this.freePage();
       return;
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newPageByYear } from '../utils/browserUtil.js';
+import { freePage, newPageByYear } from '../utils/browserUtil.js';
 import { getReportsTable } from '../utils/evaluationFunctions.js';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, Report } from '../utils/types.js';
@@ -66,7 +66,7 @@ export class YearHandler {
       this.prompt.update(this.location, 'Done');
       return reports;
     } catch (e) {
-      this.page?.browser().close();
+      this.freePage();
       this.prompt.addError(this.location, (e as Error)?.message || e);
       return [];
     }
@@ -92,12 +92,20 @@ export class YearHandler {
         tableElement
       );
 
-      this.page.browser().close();
+      this.freePage();
 
       return table;
     } catch (e) {
-      this.page?.browser().close();
+      this.freePage();
       throw new Error(`getReportsTable - ${(e as Error)?.message || e}`);
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

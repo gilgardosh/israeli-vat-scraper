@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newPageByMonth } from '../utils/browserUtil.js';
+import { freePage, newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionSales } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportSales } from '../utils/types.js';
@@ -43,6 +43,8 @@ export class MonthSalesHandler {
         getReportExpansionSales,
         salesTable
       );
+
+      this.freePage();
 
       // get income records
       for (const key in salesData) {
@@ -130,13 +132,20 @@ export class MonthSalesHandler {
         }
       }
 
-      this.page.browser().close();
       this.prompt.update(this.location, 'Done');
       return salesData;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
-      this.page?.browser().close();
+      this.freePage();
       return;
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

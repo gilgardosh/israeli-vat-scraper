@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newHomePage } from '../utils/browserUtil.js';
+import { closeAllPages, freePage, newHomePage } from '../utils/browserUtil.js';
 import { parseDate } from '../utils/dates.js';
 import { getSelectOptions, waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, Report } from '../utils/types.js';
@@ -20,6 +20,8 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       'select#ContentUsersPage_DdlTkufa > option'
     );
 
+    freePage(page);
+
     const reports: Report[] = [];
 
     const years: Record<number, number[]> = {};
@@ -33,26 +35,17 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       });
     }
 
-    let pageReuseFlag = false;
-
     await Promise.all(
       taxYears.map(async (year) => {
         const numYear = parseInt(year.value);
         if (!years || years[numYear]) {
           const months = years[numYear]?.length ? years[numYear] : null;
 
-          let pageReuse = undefined;
-          if (!pageReuseFlag && page) {
-            pageReuseFlag = true;
-            pageReuse = page;
-          }
-
           const reportsYearHandler = new YearHandler(
             config,
             prompt,
             [year.value],
-            months,
-            pageReuse
+            months
           );
           return await reportsYearHandler.handle();
         }
@@ -64,7 +57,7 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
       });
     });
 
-    page.browser().close();
+    await closeAllPages();
 
     reports.sort(
       (a, b) =>
@@ -79,7 +72,7 @@ export const homePageHandler = async (config: Config): Promise<Report[]> => {
 
     return reports;
   } catch (e) {
-    page?.browser().close();
+    await closeAllPages();
     throw new Error(`reportsHandler - ${(e as Error)?.message || e}`);
   }
 };

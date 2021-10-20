@@ -1,5 +1,9 @@
 import { Page } from 'puppeteer';
-import { newPageByMonth, newPageByYear } from '../utils/browserUtil.js';
+import {
+  freePage,
+  newPageByMonth,
+  newPageByYear,
+} from '../utils/browserUtil.js';
 import {
   getReportDetails,
   getReportExpansionTitle,
@@ -47,7 +51,7 @@ export class MonthHandler {
       const additionalDetailsPromise = this.getReportAdditionalDetails().catch(
         (e: Error) => {
           this.prompt.addError(this.location, e.message);
-          this.page?.browser().close();
+          this.freePage();
           return undefined;
         }
       );
@@ -68,6 +72,7 @@ export class MonthHandler {
       return this.report;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
+      this.freePage();
       return;
     }
   };
@@ -95,7 +100,7 @@ export class MonthHandler {
       detailsTable
     );
 
-    this.page.browser().close();
+    this.freePage();
 
     return additionalDetails;
   };
@@ -104,13 +109,7 @@ export class MonthHandler {
     try {
       this.prompt.update(this.location, 'Fetching expansion');
 
-      const page = await newPageByMonth(
-        this.config.visibleBrowser,
-        this.location[0],
-        this.index
-      );
-
-      const expansionCorePromise = this.getReportExpansion(page);
+      const expansionCorePromise = this.getReportExpansion();
 
       const inputsPromise = new MonthInputsHandler(
         this.config,
@@ -130,8 +129,7 @@ export class MonthHandler {
         this.config,
         this.prompt,
         this.location,
-        this.index,
-        page
+        this.index
       ).handle();
 
       const reportExpansion: ReportExpansion | undefined = await Promise.all([
@@ -151,8 +149,6 @@ export class MonthHandler {
         };
       });
 
-      page.browser().close();
-
       if (!reportExpansion) {
         return;
       }
@@ -163,17 +159,25 @@ export class MonthHandler {
         [...this.location, 'Expansions'],
         (e as Error)?.message || e
       );
+      this.freePage();
       return;
     }
   };
 
-  private getReportExpansion = async (
-    page: Page
-  ): Promise<ReportExpansion | undefined> => {
+  private getReportExpansion = async (): Promise<
+    ReportExpansion | undefined
+  > => {
     const location = [...this.location, 'Title'];
     try {
       // get title
       this.prompt.update(location, 'Fetching title...');
+
+      const page = await newPageByMonth(
+        this.config.visibleBrowser,
+        this.location[0],
+        this.index
+      );
+
       await waitForSelectorPlus(page, '#shaamcontent');
 
       const titleTable = await waitForSelectorPlus(
@@ -191,10 +195,20 @@ export class MonthHandler {
       );
 
       this.prompt.update(location, 'Done');
+      this.freePage();
       return reportExpansion;
     } catch (e) {
+      this.freePage();
       this.prompt.addError(location, (e as Error)?.message || e);
       return;
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { newPageByMonth } from '../utils/browserUtil.js';
+import { freePage, newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionFixes } from '../utils/evaluationFunctions.js';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportFixedInvoice } from '../utils/types.js';
@@ -56,14 +56,22 @@ export class MonthFixesHandler {
         fixesTable
       );
 
-      this.page.browser().close();
+      this.freePage();
 
       this.prompt.update(this.location, 'Done');
       return fixes;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
-      this.page?.browser().close();
+      this.freePage();
       return;
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

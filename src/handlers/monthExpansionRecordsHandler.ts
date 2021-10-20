@@ -1,29 +1,38 @@
 import { Page } from 'puppeteer';
+import { freePage, newPageByMonth } from '../utils/browserUtil.js';
 import {
   getReportExpansionInputRecordDetails,
   getReportExpansionInputRecords,
 } from '../utils/evaluationFunctions.js';
 import { waitAndClick, waitForSelectorPlus } from '../utils/pageUtil.js';
-import { ReportInputRecord, ReportInputRecordDetails } from '../utils/types.js';
+import {
+  Config,
+  ReportInputRecord,
+  ReportInputRecordDetails,
+} from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
 
 export class monthExpansionRecordsHandler {
+  private config: Config;
   private prompt: UserPrompt;
   private location: string[];
-  private page: Page;
+  private tabSelector: string;
+  private page: Page | null = null;
   private index: number;
   private secondaryIndex: number;
 
   constructor(
+    config: Config,
     prompt: UserPrompt,
     location: string[],
-    page: Page,
+    tabSelector: string,
     index: number,
     secondaryIndex: number
   ) {
+    this.config = config;
     this.prompt = prompt;
     this.location = [...location, 'Records'];
-    this.page = page;
+    this.tabSelector = tabSelector;
     this.index = index;
     this.secondaryIndex = secondaryIndex;
   }
@@ -31,6 +40,15 @@ export class monthExpansionRecordsHandler {
   public handle = async (): Promise<ReportInputRecord[]> => {
     try {
       this.prompt.update(this.location, 'Fetching');
+
+      this.page = await newPageByMonth(
+        this.config.visibleBrowser,
+        this.location[0],
+        this.index
+      );
+
+      await waitAndClick(this.page, this.tabSelector);
+
       await waitAndClick(
         this.page,
         `#tblSikum > tbody > tr:nth-child(${this.index}) > td:nth-child(${this.secondaryIndex}) > a`
@@ -50,11 +68,12 @@ export class monthExpansionRecordsHandler {
         records[i].details = await this.getRecordDetails(i);
       }
 
-      await waitAndClick(this.page, '#ContentUsersPage_btnGoBack');
       this.prompt.update(this.location, 'Done');
+      this.freePage();
       return records;
     } catch (e) {
       this.prompt.addError(this.location, (e as Error)?.message || e);
+      this.freePage();
       return [];
     }
   };
@@ -63,6 +82,25 @@ export class monthExpansionRecordsHandler {
     index: number
   ): Promise<ReportInputRecordDetails | undefined> => {
     try {
+      if (!this.page) {
+        this.page = await newPageByMonth(
+          this.config.visibleBrowser,
+          this.location[0],
+          this.index
+        );
+
+        await waitAndClick(this.page, this.tabSelector);
+
+        const button = await waitForSelectorPlus(
+          this.page,
+          `#tblSikum > tbody > tr:nth-child(${this.index}) > td:nth-child(${this.secondaryIndex}) > a`
+        );
+        if (!button) {
+          return;
+        }
+        await button.click();
+      }
+
       await waitAndClick(
         this.page,
         `#ContentUsersPage_dgHeshboniot_btnPratimNosafim_${index}`
@@ -85,7 +123,16 @@ export class monthExpansionRecordsHandler {
         [...this.location, 'Details'],
         (e as Error)?.message || e
       );
+      this.freePage();
       return;
     }
   };
+
+  private freePage() {
+    if (this.page) {
+      freePage(this.page);
+      this.page = null;
+    }
+    return;
+  }
 }

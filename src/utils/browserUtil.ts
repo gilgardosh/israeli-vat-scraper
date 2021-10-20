@@ -67,6 +67,22 @@ export const newPageByYear = async (
 
 export const newHomePage = async (showBrowser: boolean): Promise<Page> => {
   try {
+    if (pagesMagazine.length) {
+      const page = pagesMagazine.pop() as Page;
+
+      try {
+        await page.goto('https://www.misim.gov.il/emdvhmfrt/wViewDuchot.aspx', {
+          waitUntil: ['networkidle2', 'domcontentloaded'],
+        });
+
+        await waitForSelectorPlus(page, '#ContentUsersPage_DdlTkufa');
+
+        return page;
+      } catch {
+        page.browser().close();
+      }
+    }
+
     const browser = await puppeteer.launch({
       headless: !showBrowser,
     });
@@ -85,4 +101,17 @@ export const newHomePage = async (showBrowser: boolean): Promise<Page> => {
   } catch (e) {
     throw new Error(`newHomePage - ${(e as Error)?.message}`);
   }
+};
+
+const pagesMagazine: Page[] = [];
+
+export const freePage = (page: Page) => {
+  if (page) {
+    pagesMagazine.push(page);
+  }
+};
+
+export const closeAllPages = async () => {
+  await Promise.all(pagesMagazine.map((page) => page.browser().close()));
+  return;
 };
