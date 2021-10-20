@@ -6,6 +6,8 @@ import { Config, ReportSales } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
 import { monthExpansionRecordsHandler } from './monthExpansionRecordsHandler.js';
 
+const SALES_BUTTON_SELECTOR = '#ContentUsersPage_TabMenu1_LinkButton1';
+
 export class MonthSalesHandler {
   private config: Config;
   private prompt: UserPrompt;
@@ -34,7 +36,7 @@ export class MonthSalesHandler {
         this.index
       );
 
-      await waitAndClick(this.page, '#ContentUsersPage_TabMenu1_LinkButton1');
+      await waitAndClick(this.page, SALES_BUTTON_SELECTOR);
 
       const salesTable = await waitForSelectorPlus(this.page, '#tblSikum');
       const salesData = await this.page.evaluate(
@@ -74,9 +76,10 @@ export class MonthSalesHandler {
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
+              this.config,
               this.prompt,
               this.location,
-              this.page,
+              SALES_BUTTON_SELECTOR,
               index,
               secondaryIndex
             );
@@ -113,9 +116,10 @@ export class MonthSalesHandler {
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
+              this.config,
               this.prompt,
               this.location,
-              this.page,
+              SALES_BUTTON_SELECTOR,
               index,
               secondaryIndex
             );

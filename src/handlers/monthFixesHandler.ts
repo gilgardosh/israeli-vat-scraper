@@ -1,4 +1,5 @@
 import { Page } from 'puppeteer';
+import { newPageByMonth } from '../utils/browserUtil.js';
 import { getReportExpansionFixes } from '../utils/evaluationFunctions.js';
 import { waitForSelectorPlus } from '../utils/pageUtil.js';
 import { Config, ReportFixedInvoice } from '../utils/types.js';
@@ -9,25 +10,29 @@ export class MonthFixesHandler {
   private prompt: UserPrompt;
   private location: string[];
   private index: number;
-  private page: Page;
+  private page: Page | null = null;
 
   constructor(
     config: Config,
     prompt: UserPrompt,
     location: string[],
-    index: number,
-    page: Page
+    index: number
   ) {
     this.config = config;
     this.prompt = prompt;
     this.location = [...location, 'Fixes'];
     this.index = index;
-    this.page = page;
   }
 
   public handle = async (): Promise<ReportFixedInvoice[] | undefined> => {
     this.prompt.update(this.location, 'Fetching...');
     try {
+      this.page = await newPageByMonth(
+        this.config.visibleBrowser,
+        this.location[0],
+        this.index
+      );
+
       const button = await this.page
         .waitForSelector('#ContentUsersPage_lnkHeshboniotBeforeTikun')
         .catch(() => {

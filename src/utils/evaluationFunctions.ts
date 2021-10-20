@@ -223,7 +223,7 @@ export const getReportExpansionFixes = (
     return parseInt(raw.replace(/\D/g, '')) * (raw.includes('-') ? -1 : 1);
   };
 
-  for (let i = 1; i < table.rows.length; i++) {
+  for (let i = 0; i < table.rows.length; i++) {
     const tableRow = table.rows[i];
     const fix: ReportFixedInvoice = {
       saleType: tableRow.cells[0].innerText,

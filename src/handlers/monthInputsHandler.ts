@@ -6,6 +6,8 @@ import { Config, ReportInputs } from '../utils/types.js';
 import { UserPrompt } from '../utils/userPrompt.js';
 import { monthExpansionRecordsHandler } from './monthExpansionRecordsHandler.js';
 
+const INPUTS_BUTTON_SELECTOR = '#ContentUsersPage_TabMenu1_LinkButton0';
+
 export class MonthInputsHandler {
   private config: Config;
   private prompt: UserPrompt;
@@ -34,7 +36,7 @@ export class MonthInputsHandler {
         this.index
       );
 
-      await waitAndClick(this.page, '#ContentUsersPage_TabMenu1_LinkButton0');
+      await waitAndClick(this.page, INPUTS_BUTTON_SELECTOR);
 
       const inputsTable = await waitForSelectorPlus(this.page, '#tblSikum');
       const inputsData = await this.page.evaluate(
@@ -70,9 +72,10 @@ export class MonthInputsHandler {
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
+              this.config,
               this.prompt,
               this.location,
-              this.page,
+              INPUTS_BUTTON_SELECTOR,
               index,
               secondaryIndex
             );
@@ -105,9 +108,10 @@ export class MonthInputsHandler {
 
           if (index) {
             const recordsHandler = new monthExpansionRecordsHandler(
+              this.config,
               this.prompt,
               this.location,
-              this.page,
+              INPUTS_BUTTON_SELECTOR,
               index,
               secondaryIndex
             );
