@@ -1,6 +1,20 @@
 {
-  "extends": [
-    "config:base"
+  "extends": ["config:base"],
+  "postUpdateOptions": ["yarnDedupeFewer"],
+  "automerge": false,
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "prPriority": -1
+    },
+    {
+      "matchPackagePatterns": ["*"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    }
   ],
-  "supportPolicy": ["current"]
+  "timezone": "Asia/Jerusalem",
+  "schedule": ["after 10pm and before 6:00am"]
 }
